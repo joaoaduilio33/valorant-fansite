@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — KAY/O</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .agent-hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      padding: 0 3rem 4rem; overflow: hidden;
+    }
+    .agent-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(250,200,0,0.10), transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(180,140,0,0.07), transparent 60%),
+                  linear-gradient(135deg, #0d0d0d, #0a0900);
+    }
+    .agent-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(250,200,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(250,200,0,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* scanner lines efeito robótico */
+    .scan-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(250,200,0,0.015) 3px,
+        rgba(250,200,0,0.015) 4px
+      );
+    }
+    .agent-hero-img {
+      position: absolute; right: 5%; bottom: 0;
+      height: 95%; object-fit: contain;
+      opacity: 0; animation: slide-in-right 1s 0.3s forwards;
+      filter: drop-shadow(0 0 55px rgba(250,200,0,0.4)) drop-shadow(0 0 20px rgba(200,160,0,0.3));
+    }
+    @keyframes slide-in-right {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .agent-hero-content { position: relative; z-index: 2; max-width: 600px; }
+    .agent-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 2rem; transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .agent-back:hover { color: #fac800; }
+    .agent-role-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(250,200,0,0.4); border-radius: 2px;
+      background: rgba(250,200,0,0.08);
+      color: #fac800; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .agent-hero-name {
+      font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 900;
+      line-height: 0.9; text-transform: uppercase; letter-spacing: -3px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .agent-hero-name span { color: transparent; -webkit-text-stroke: 2px #fac800; display: block; }
+    .agent-hero-origin {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .agent-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase; border-radius: 2px;
+    }
+    .agent-content { max-width: 1000px; margin: 0 auto; padding: 5rem 3rem; }
+    .block-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .block-label-line { width: 30px; height: 1px; background: #fac800; }
+    .block-label-text { font-size: 0.65rem; letter-spacing: 4px; color: #fac800; text-transform: uppercase; }
+    .block-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); margin-bottom: 2rem; }
+    .trailer-wrap {
+      position: relative; width: 100%; padding-bottom: 56.25%;
+      border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+      margin-bottom: 5rem;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+    .trailer-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .bio-box {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 2rem; margin-bottom: 5rem;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+    .bio-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #fac800, transparent);
+    }
+    .bio-text { font-size: 0.9rem; color: var(--gray); line-height: 1.9; }
+    .bio-text span { color: var(--white); }
+    .abilities-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .ability-card {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      transition: border-color 0.3s, transform 0.3s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .ability-card:hover { border-color: #fac800; transform: translateY(-3px); }
+    .ability-key { font-size: 0.65rem; letter-spacing: 3px; color: #fac800; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .ability-name { font-size: 1rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .ability-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.6; }
+    .ability-type {
+      display: inline-block; margin-top: 0.8rem; padding: 0.2rem 0.6rem;
+      background: rgba(250,200,0,0.08); border: 1px solid rgba(250,200,0,0.2);
+      color: #fac800; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; border-radius: 2px;
+    }
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .stat-box {
+      flex: 1; min-width: 140px; background: var(--black2);
+      border: 1px solid var(--border); border-radius: 2px; padding: 1.2rem; text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num { font-size: 2rem; font-weight: 900; color: #fac800; line-height: 1; }
+    .stat-box-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-top: 0.3rem; }
+    .agents-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 3rem; border-top: 1px solid var(--border);
+    }
+    .agent-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .agent-nav-btn:hover { color: #fac800; }
+    .agent-nav-btn img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); background: var(--black2); }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .agent-hero { padding: 7rem 1.5rem 3rem; min-height: auto; }
+      .agent-hero-img { height: 50%; opacity: 0.3; }
+      .agent-content { padding: 3rem 1.5rem; }
+      .abilities-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html" class="active">Agentes</a></li>
+    <li><a href="../mapas.html">Mapas</a></li>
+  </ul>
+</nav>
+
+<section class="agent-hero">
+  <div class="agent-hero-bg"></div>
+  <div class="agent-hero-grid"></div>
+  <div class="scan-lines"></div>
+  <img class="agent-hero-img"
+    src="https://media.valorant-api.com/agents/601dbbe7-43ce-be57-2a40-4abd24953621/fullportrait.png"
+    alt="KAY/O"/>
+  <div class="agent-hero-content">
+    <a href="../agentes.html" class="agent-back">← Voltar para Agentes</a>
+    <div class="agent-role-badge">⚡ Iniciador</div>
+    <h1 class="agent-hero-name">
+      KAY/O
+      <span>SUPRESSOR 🤖</span>
+    </h1>
+    <p class="agent-hero-origin">📍 Futuro Alternativo</p>
+    <div class="agent-hero-tags">
+      <span class="hero-tag">Supressão</span>
+      <span class="hero-tag">Anti-Radiant</span>
+      <span class="hero-tag">Robô</span>
+    </div>
+  </div>
+</section>
+
+<div class="agent-content">
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Trailer Oficial</span>
+    </div>
+    <h2 class="block-title">Cinematic</h2>
+    <div class="trailer-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/1s2MCaOkFvk"
+        title="KAY/O Agent Trailer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyyscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Lore</span>
+    </div>
+    <h2 class="block-title">Biografia</h2>
+    <div class="bio-box">
+      <p class="bio-text">
+        <span>KAY/O</span> é uma máquina de guerra construída num <span>futuro alternativo</span>
+        com um único objetivo: exterminar Radiantes.
+        Enviado de volta no tempo para mudar o curso da guerra,
+        ele carrega em seus circuitos as memórias de batalhas que
+        <span>ainda não aconteceram</span>.
+        Frio e calculista como toda máquina — mas com algo que parece
+        quase humano por dentro.
+        Seu supressor anula as habilidades inimigas completamente,
+        tornando <span>Radiantes em humanos comuns</span>.
+        E humanos comuns não sobrevivem a KAY/O. 🤖
+      </p>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Abilities</span>
+    </div>
+    <h2 class="block-title">Habilidades</h2>
+    <div class="abilities-grid">
+      <div class="ability-card">
+        <div class="ability-key">// C</div>
+        <div class="ability-name">FRAG/ment</div>
+        <div class="ability-desc">
+          Lança uma granada que ricocheteia e explode múltiplas vezes — causando dano pesado em área a inimigos próximos do centro.
+        </div>
+        <span class="ability-type">Dano</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// Q</div>
+        <div class="ability-name">FLASH/drive</div>
+        <div class="ability-desc">
+          Lança uma faca de flash que pode ser detonada manualmente. Cega inimigos instantaneamente — impossível de prever o timing.
+        </div>
+        <span class="ability-type">Flash</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// E</div>
+        <div class="ability-name">ZERO/point</div>
+        <div class="ability-desc">
+          Arremessa uma lâmina supressora que se crava em superfícies e suprime todos os inimigos na área — bloqueando habilidades deles.
+        </div>
+        <span class="ability-type">Supressão</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// X — Ultimate</div>
+        <div class="ability-name">NULL/cmd</div>
+        <div class="ability-desc">
+          KAY/O entra em modo overdrive, suprimindo todos os inimigos próximos. Se morrer durante a ult, fica instável — aliados podem reativá-lo.
+        </div>
+        <span class="ability-type">Ultimate</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-box-num">4</div><div class="stat-box-label">Habilidades</div></div>
+      <div class="stat-box"><div class="stat-box-num">6</div><div class="stat-box-label">Ultimate Cost</div></div>
+      <div class="stat-box"><div class="stat-box-num">A+</div><div class="stat-box-label">Tier</div></div>
+      <div class="stat-box"><div class="stat-box-num">🤖</div><div class="stat-box-label">O Supressor</div></div>
+    </div>
+  </div>
+
+  <div class="agents-nav reveal">
+    <a href="skye.html" class="agent-nav-btn">
+      <img src="https://i.imgur.com/8Nx17h7.png" alt="Skye"/>
+      ← Skye
+    </a>
+    <a href="../agentes.html" class="btn btn-red" style="font-size:0.75rem;">Ver Todos</a>
+    <a href="fade.html" class="agent-nav-btn">
+      Fade →
+      <img src="https://media.valorant-api.com/agents/dade69b4-4f5a-8528-247b-219e5a1facd6/displayicon.png" alt="Fade"/>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

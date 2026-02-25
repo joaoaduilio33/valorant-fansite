@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Jett</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .agent-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 3rem 4rem;
+      overflow: hidden;
+    }
+    .agent-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(255,70,85,0.12), transparent 70%),
+                  linear-gradient(135deg, #0f0f0f, #1a0a0c);
+    }
+    .agent-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,70,85,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,70,85,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .agent-hero-img {
+      position: absolute;
+      right: 5%;
+      bottom: 0;
+      height: 95%;
+      object-fit: contain;
+      opacity: 0;
+      animation: slide-in-right 1s 0.3s forwards;
+      filter: drop-shadow(0 0 40px rgba(255,70,85,0.3));
+    }
+    @keyframes slide-in-right {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .agent-hero-content {
+      position: relative; z-index: 2;
+      max-width: 600px;
+    }
+    .agent-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 2rem;
+      transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .agent-back:hover { color: var(--red); }
+    .agent-role-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(255,70,85,0.4);
+      border-radius: 2px; background: rgba(255,70,85,0.08);
+      color: var(--red); font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .agent-hero-name {
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-weight: 900; line-height: 0.9;
+      text-transform: uppercase; letter-spacing: -3px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .agent-hero-name span {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--red);
+      display: block;
+    }
+    .agent-hero-origin {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .agent-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase;
+      border-radius: 2px;
+    }
+
+    /* CONTENT */
+    .agent-content {
+      max-width: 1000px; margin: 0 auto;
+      padding: 5rem 3rem;
+    }
+
+    /* TRAILER */
+    .block-label {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .block-label-line { width: 30px; height: 1px; background: var(--red); }
+    .block-label-text {
+      font-size: 0.65rem; letter-spacing: 4px;
+      color: var(--red); text-transform: uppercase;
+    }
+    .block-title {
+      font-size: 1.5rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--white); margin-bottom: 2rem;
+    }
+
+    .trailer-wrap {
+      position: relative; width: 100%;
+      padding-bottom: 56.25%;
+      border: 1px solid var(--border);
+      border-radius: 2px; overflow: hidden;
+      margin-bottom: 5rem;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+    .trailer-wrap iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: none;
+    }
+
+    /* BIO */
+    .bio-box {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 2px; padding: 2rem;
+      margin-bottom: 5rem;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+    .bio-box::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--red), transparent);
+    }
+    .bio-text {
+      font-size: 0.9rem; color: var(--gray);
+      line-height: 1.9; letter-spacing: 0.5px;
+    }
+    .bio-text span { color: var(--white); }
+
+    /* HABILIDADES */
+    .abilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .ability-card {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .ability-card:hover { border-color: var(--red); transform: translateY(-3px); }
+    .ability-key {
+      font-size: 0.65rem; letter-spacing: 3px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      font-family: 'Courier New', monospace;
+    }
+    .ability-name {
+      font-size: 1rem; font-weight: 700;
+      color: var(--white); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 0.5rem;
+    }
+    .ability-desc {
+      font-size: 0.75rem; color: var(--gray);
+      line-height: 1.6; letter-spacing: 0.5px;
+    }
+    .ability-type {
+      display: inline-block; margin-top: 0.8rem;
+      padding: 0.2rem 0.6rem;
+      background: rgba(255,70,85,0.1);
+      border: 1px solid rgba(255,70,85,0.2);
+      color: var(--red); font-size: 0.6rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      border-radius: 2px;
+    }
+
+    /* STATS */
+    .stats-row {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 5rem;
+    }
+    .stat-box {
+      flex: 1; min-width: 140px;
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.2rem;
+      text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num {
+      font-size: 2rem; font-weight: 900;
+      color: var(--red); line-height: 1;
+    }
+    .stat-box-label {
+      font-size: 0.6rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* NAV AGENTES */
+    .agents-nav {
+      display: flex; justify-content: space-between;
+      align-items: center; padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .agent-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px;
+      text-transform: uppercase; transition: color 0.3s;
+    }
+    .agent-nav-btn:hover { color: var(--red); }
+    .agent-nav-btn img {
+      width: 48px; height: 48px;
+      border-radius: 50%; object-fit: cover;
+      border: 1px solid var(--border);
+      background: var(--black2);
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .agent-hero { padding: 7rem 1.5rem 3rem; min-height: auto; }
+      .agent-hero-img { height: 50%; opacity: 0.3; }
+      .agent-content { padding: 3rem 1.5rem; }
+      .abilities-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html" class="active">Agentes</a></li>
+    <li><a href="../mapas.html">Mapas</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="agent-hero">
+  <div class="agent-hero-bg"></div>
+  <div class="agent-hero-grid"></div>
+  <img class="agent-hero-img"
+    src="https://media.valorant-api.com/agents/add6443a-41bd-e414-f6ad-e58d267f4e95/fullportrait.png"
+    alt="Jett"/>
+  <div class="agent-hero-content">
+    <a href="../agentes.html" class="agent-back">← Voltar para Agentes</a>
+    <div class="agent-role-badge">⚔ Duelista</div>
+    <h1 class="agent-hero-name">
+      Jett
+      <span>제트</span>
+    </h1>
+    <p class="agent-hero-origin">📍 Coreia do Sul</p>
+    <div class="agent-hero-tags">
+      <span class="hero-tag">Mobilidade</span>
+      <span class="hero-tag">Fragger</span>
+      <span class="hero-tag">Evasão</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="agent-content">
+
+  <!-- TRAILER -->
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Trailer Oficial</span>
+    </div>
+    <h2 class="block-title">Cinematic</h2>
+    <div class="trailer-wrap">
+      <iframe
+        src="https://www.youtube.com/watch?v=PDX9aImCYNY"
+        title="Jett Agent Trailer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Lore</span>
+    </div>
+    <h2 class="block-title">Biografia</h2>
+    <div class="bio-box">
+      <p class="bio-text">
+        <span>Jett</span>, agente do Protocolo VALORANT originária da <span>Coreia do Sul</span>,
+        é conhecida pela sua velocidade e agilidade incomparáveis em combate.
+        Com o poder de manipular o vento ao seu favor, ela se move pelos campos de batalha
+        como uma rajada — imprevisível, rápida e letal.
+        Sua abordagem é <span>solo e impulsiva</span>, preferindo confiar nos próprios reflexos
+        a depender de aliados. É a fragger ideal para quem quer dominar cada confronto
+        com velocidade e estilo.
+      </p>
+    </div>
+  </div>
+
+  <!-- HABILIDADES -->
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Abilities</span>
+    </div>
+    <h2 class="block-title">Habilidades</h2>
+    <div class="abilities-grid">
+      <div class="ability-card">
+        <div class="ability-key">// C</div>
+        <div class="ability-name">Correnteza</div>
+        <div class="ability-desc">
+          Lança uma cortina de fumaça que bloqueia a visão inimiga por um breve período.
+        </div>
+        <span class="ability-type">Smoke</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// Q</div>
+        <div class="ability-name">Lâminas de Rajada</div>
+        <div class="ability-desc">
+          Arremessa lâminas afiadas de vento que causam dano aos inimigos atingidos.
+        </div>
+        <span class="ability-type">Dano</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// E</div>
+        <div class="ability-name">Updraft</div>
+        <div class="ability-desc">
+          Propulsiona Jett para o alto, permitindo alcançar lugares elevados ou escapar de situações perigosas.
+        </div>
+        <span class="ability-type">Mobilidade</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// X — Ultimate</div>
+        <div class="ability-name">Lâminas Relâmpago</div>
+        <div class="ability-desc">
+          Equipa duas adagas carregadas de energia. Inimigos eliminados recarregam as adagas.
+          Dano no corpo é letal. Cada uso consome uma adaga.
+        </div>
+        <span class="ability-type">Ultimate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats</h2>
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-box-num">4</div>
+        <div class="stat-box-label">Habilidades</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num">7</div>
+        <div class="stat-box-label">Ultimate Cost</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num">S+</div>
+        <div class="stat-box-label">Tier</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num">#1</div>
+        <div class="stat-box-label">Pick Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV ENTRE AGENTES -->
+  <div class="agents-nav reveal">
+    <a href="veto.html" class="agent-nav-btn">
+  <img src="https://i.imgur.com/YgCtNAF.png" alt="Veto"/>
+  ← Veto
+</a>
+
+    </a>
+    <a href="../agentes.html" class="btn btn-red" style="font-size:0.75rem;">Ver Todos</a>
+    <a href="raze.html" class="agent-nav-btn">
+      Raze →
+      <img src="https://media.valorant-api.com/agents/f94c3b30-42be-e959-889c-5aa313dba261/displayicon.png" alt="Raze"/>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Bind</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .map-hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      padding: 0 3rem 4rem; overflow: hidden;
+    }
+    .map-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(200,140,60,0.13), transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 15% 80%, rgba(160,100,20,0.09), transparent 60%),
+                  linear-gradient(135deg, #0d0800, #080500);
+    }
+    .map-hero-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0.18;
+      filter: saturate(0.6);
+    }
+    .map-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(8,5,0,0.95) 40%, rgba(8,5,0,0.3) 100%),
+                  linear-gradient(to top, rgba(8,5,0,0.9) 0%, transparent 50%);
+    }
+    .map-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(200,140,60,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,140,60,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .map-hero-content { position: relative; z-index: 2; max-width: 650px; }
+    .map-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 2rem; transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .map-back:hover { color: #c88c3c; }
+    .map-pool-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(80,220,100,0.4); border-radius: 2px;
+      background: rgba(80,220,100,0.08);
+      color: #50dc64; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .map-hero-name {
+      font-size: clamp(5rem, 12vw, 11rem); font-weight: 900;
+      line-height: 0.85; text-transform: uppercase; letter-spacing: -4px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .map-hero-name span { color: transparent; -webkit-text-stroke: 2px #c88c3c; display: block; }
+    .map-hero-location {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .map-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase; border-radius: 2px;
+    }
+
+    /* CONTENT */
+    .map-content { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; }
+    .block-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .block-label-line { width: 30px; height: 1px; background: #c88c3c; }
+    .block-label-text { font-size: 0.65rem; letter-spacing: 4px; color: #c88c3c; text-transform: uppercase; }
+    .block-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); margin-bottom: 2rem; }
+
+    /* OVERVIEW */
+    .map-overview {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      margin-bottom: 5rem; align-items: center;
+    }
+    .map-overview-text { font-size: 0.9rem; color: var(--gray); line-height: 1.9; }
+    .map-overview-text span { color: var(--white); }
+    .map-overview-img {
+      width: 100%; border: 1px solid var(--border); border-radius: 2px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+
+    /* MINIMAP */
+    .minimap-section { margin-bottom: 5rem; }
+    .minimap-wrap {
+      position: relative; width: 100%;
+      border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      background: var(--black2);
+    }
+    .minimap-wrap img { width: 100%; display: block; }
+
+    /* CALLOUTS */
+    .callouts-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .callout-section {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .callout-section-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    }
+    .callout-section-title.atk { color: var(--red); border-color: rgba(255,70,85,0.2); }
+    .callout-section-title.def { color: #50a0c8; border-color: rgba(80,160,200,0.2); }
+    .callout-section-title.mid { color: #c88c3c; border-color: rgba(200,140,60,0.2); }
+    .callout-list { list-style: none; padding: 0; margin: 0; }
+    .callout-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.75rem;
+    }
+    .callout-list li:last-child { border-bottom: none; }
+    .callout-name { color: var(--white); font-weight: 600; letter-spacing: 1px; }
+    .callout-alt { color: var(--gray); font-size: 0.65rem; }
+
+    /* COMP */
+    .comp-section { margin-bottom: 5rem; }
+    .comp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .comp-card {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .comp-card-title {
+      font-size: 0.7rem; letter-spacing: 3px; color: #c88c3c;
+      text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .comp-agents {
+      display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    .comp-agent {
+      display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    }
+    .comp-agent img {
+      width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--border);
+    }
+    .comp-agent span {
+      font-size: 0.55rem; letter-spacing: 1px; color: var(--gray);
+      text-transform: uppercase;
+    }
+    .comp-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.6; }
+
+    /* STATS */
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .stat-box {
+      flex: 1; min-width: 140px; background: var(--black2);
+      border: 1px solid var(--border); border-radius: 2px; padding: 1.2rem; text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num { font-size: 2rem; font-weight: 900; color: #c88c3c; line-height: 1; }
+    .stat-box-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-top: 0.3rem; }
+
+    /* NAV */
+    .maps-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 3rem; border-top: 1px solid var(--border);
+    }
+    .map-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .map-nav-btn:hover { color: #c88c3c; }
+    .map-nav-btn img {
+      width: 64px; height: 36px; object-fit: cover; border-radius: 2px;
+      border: 1px solid var(--border);
+    }
+
+    @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .map-hero { padding: 7rem 1.5rem 3rem; }
+      .map-content { padding: 3rem 1.5rem; }
+      .map-overview { grid-template-columns: 1fr; }
+      .callouts-grid { grid-template-columns: 1fr; }
+      .comp-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html">Agentes</a></li>
+    <li><a href="../mapas.html" class="active">Mapas</a></li>
+  </ul>
+</nav>
+
+<section class="map-hero">
+  <img class="map-hero-img" src="https://i.imgur.com/IR5Hzw4.jpeg" alt="Bind"/>
+  <div class="map-hero-overlay"></div>
+  <div class="map-hero-grid"></div>
+  <div class="map-hero-content">
+    <a href="../mapas.html" class="map-back">← Voltar para Mapas</a>
+    <div class="map-pool-badge">🟢 Competitivo</div>
+    <h1 class="map-hero-name">
+      Bind
+      <span>MARROCOS 🇲🇦</span>
+    </h1>
+    <p class="map-hero-location">📍 Marrocos · 2 Sites · Teleporters</p>
+    <div class="map-hero-tags">
+      <span class="hero-tag">Teleporter</span>
+      <span class="hero-tag">Sem Mid</span>
+      <span class="hero-tag">Rotação Rápida</span>
+      <span class="hero-tag">2 Sites</span>
+    </div>
+  </div>
+</section>
+
+<div class="map-content">
+
+  <!-- OVERVIEW -->
+  <div class="reveal" style="margin-bottom:5rem;">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Overview</span>
+    </div>
+    <div class="map-overview">
+      <div>
+        <h2 class="block-title">Sobre o Mapa</h2>
+        <p class="map-overview-text">
+          <span>Bind</span> é um dos mapas originais do VALORANT —
+          localizado no <span>Marrocos</span>, tem como característica
+          única os <span>dois teleporters</span> que conectam os flancos
+          dos dois sites diretamente, eliminando qualquer mid convencional.
+          Isso significa que rotação é instantânea,
+          mas flancos inesperados são constantes.
+          Dominar os <span>timings dos teleporters</span> é essencial
+          pra não ser pego de surpresa e pra criar pressão simultânea nos dois sites.
+          Mapa que <span>premia comunicação</span> e leitura de rotação acima de tudo.
+        </p>
+      </div>
+      <img class="map-overview-img"
+        src="https://i.imgur.com/IR5Hzw4.jpeg"
+        alt="Bind Overview"/>
+    </div>
+  </div>
+
+  <!-- MINIMAP -->
+  <div class="minimap-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Minimap</span>
+    </div>
+    <h2 class="block-title">Mapa 2D</h2>
+    <div class="minimap-wrap">
+      <img src="https://i.imgur.com/3kFXo3D.png" alt="Bind Minimap"/>
+    </div>
+  </div>
+
+  <!-- CALLOUTS -->
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Callouts</span>
+    </div>
+    <h2 class="block-title">Nomes dos Locais</h2>
+    <div class="callouts-grid">
+
+      <div class="callout-section">
+        <div class="callout-section-title atk">⚔️ Site A</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">A Site</span><span class="callout-alt">Site A</span></li>
+          <li><span class="callout-name">A Main</span><span class="callout-alt">A Entrada</span></li>
+          <li><span class="callout-name">A Showers</span><span class="callout-alt">Banheiro</span></li>
+          <li><span class="callout-name">A Short</span><span class="callout-alt">Short A</span></li>
+          <li><span class="callout-name">A Lamps</span><span class="callout-alt">Lanternas</span></li>
+          <li><span class="callout-name">A Garden</span><span class="callout-alt">Jardim</span></li>
+          <li><span class="callout-name">A Heaven</span><span class="callout-alt">Céu A</span></li>
+          <li><span class="callout-name">Teleport A</span><span class="callout-alt">TP A</span></li>
+        </ul>
+      </div>
+
+      <div class="callout-section">
+        <div class="callout-section-title def">🛡️ Site B</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">B Site</span><span class="callout-alt">Site B</span></li>
+          <li><span class="callout-name">B Main</span><span class="callout-alt">B Entrada</span></li>
+          <li><span class="callout-name">B Long</span><span class="callout-alt">Long B</span></li>
+          <li><span class="callout-name">B Short</span><span class="callout-alt">Short B</span></li>
+          <li><span class="callout-name">B Window</span><span class="callout-alt">Janela B</span></li>
+          <li><span class="callout-name">B Elbow</span><span class="callout-alt">Cotovelo</span></li>
+          <li><span class="callout-name">Hookah</span><span class="callout-alt">Narguilé</span></li>
+          <li><span class="callout-name">Teleport B</span><span class="callout-alt">TP B</span></li>
+        </ul>
+      </div>
+
+      <div class="callout-section">
+        <div class="callout-section-title mid">🗺️ Geral</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">Attacker Spawn</span><span class="callout-alt">Spawn ATK</span></li>
+          <li><span class="callout-name">Defender Spawn</span><span class="callout-alt">Spawn DEF</span></li>
+          <li><span class="callout-name">Fountain</span><span class="callout-alt">Fonte</span></li>
+          <li><span class="callout-name">Lamps</span><span class="callout-alt">Lanternas</span></li>
+          <li><span class="callout-name">Flank</span><span class="callout-alt">Teleport Saída</span></li>
+          <li><span class="callout-name">Cubby</span><span class="callout-alt">Cantinho</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats do Mapa</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-box-num">2</div><div class="stat-box-label">Sites</div></div>
+      <div class="stat-box"><div class="stat-box-num">2</div><div class="stat-box-label">Teleporters</div></div>
+      <div class="stat-box"><div class="stat-box-num">52.7%</div><div class="stat-box-label">Win Rate Médio</div></div>
+      <div class="stat-box"><div class="stat-box-num">🟢</div><div class="stat-box-label">Competitivo</div></div>
+    </div>
+  </div>
+
+  <!-- BEST COMP -->
+  <div class="comp-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Meta</span>
+    </div>
+    <h2 class="block-title">Melhores Composições</h2>
+    <div class="comp-grid">
+
+      <div class="comp-card">
+        <div class="comp-card-title">// Comp Meta — Alta Win Rate</div>
+        <div class="comp-agents">
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/1e58de9c-4950-5125-93e9-a0aee9f98746/displayiconsmall.png"/>
+            <span>Killjoy</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/efba5359-4016-a1e5-7626-b1ae3d42ac96/displayiconsmall.png"/>
+            <span>Vyse</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/e370fa57-4757-3604-3648-499e1f642d3f/displayiconsmall.png"/>
+            <span>Gekko</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/5f8d3a7f-467b-97f3-062c-2189ba624031/displayiconsmall.png"/>
+            <span>Breach</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/eb93336a-449b-9c1e-0ac7-d906e7f5e9fa/displayiconsmall.png"/>
+            <span>Phoenix</span>
+          </div>
+        </div>
+        <p class="comp-desc">Composição com maior win rate baseada em dados reais de 18.131 partidas competitivas. Killjoy (65.4%) e Vyse (65.1%) ancoram a defesa enquanto Gekko e Breach abrem sites com facilidade.</p>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-card-title">// Comp Clássica — Pro Play</div>
+        <div class="comp-agents">
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/9f0d8ba9-4140-b941-57d3-a7ad57c6b417/displayiconsmall.png"/>
+            <span>Brimstone</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/707eab51-4836-f488-046a-cda6bf494859/displayiconsmall.png"/>
+            <span>Viper</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/f94c3b30-42be-e959-889c-5aa313dba261/displayiconsmall.png"/>
+            <span>Raze</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/6f2a04ca-43e0-be17-7f36-b3908627744d/displayiconsmall.png"/>
+            <span>Skye</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/117ed9e3-49f3-6512-3ccf-0cada7e3823b/displayiconsmall.png"/>
+            <span>Cypher</span>
+          </div>
+        </div>
+        <p class="comp-desc">Composição clássica usada por times pro como Fnatic — Brimstone e Viper controlam smokes duplos, Raze domina o site com explosivos e Cypher trava flancos dos teleporters.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="maps-nav reveal">
+    <a href="corrode.html" class="map-nav-btn">
+      <img src="https://i.imgur.com/UZCMVp3.jpeg" alt="Corrode"/>
+      ← Corrode
+    </a>
+    <a href="../mapas.html" class="btn btn-red" style="font-size:0.75rem;">Ver Todos</a>
+    <a href="haven.html" class="map-nav-btn">
+      Haven →
+      <img src="https://i.imgur.com/nzCngcz.jpeg" alt="Haven"/>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

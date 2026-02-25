@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Mapas</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .maps-hero {
+      position: relative; min-height: 40vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+      padding: 8rem 2rem 4rem;
+    }
+    .maps-hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,70,85,0.07), transparent 70%),
+        linear-gradient(180deg, #0a0a0a, #050505);
+    }
+    .maps-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,70,85,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,70,85,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .maps-hero-content { position: relative; z-index: 2; }
+    .maps-hero-label {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      font-size: 0.65rem; letter-spacing: 4px; color: var(--red);
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .maps-hero-label::before,
+    .maps-hero-label::after {
+      content: ''; width: 30px; height: 1px; background: var(--red);
+    }
+    .maps-hero-title {
+      font-size: clamp(3rem, 8vw, 7rem); font-weight: 900;
+      text-transform: uppercase; letter-spacing: -2px;
+      color: var(--white); line-height: 0.9;
+    }
+    .maps-hero-title span { color: transparent; -webkit-text-stroke: 2px var(--red); }
+    .maps-hero-sub {
+      font-size: 0.85rem; color: var(--gray);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-top: 1.5rem;
+    }
+
+    /* FILTROS */
+    .maps-filters {
+      max-width: 1200px; margin: 0 auto;
+      padding: 3rem 2rem 1rem;
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 0.65rem; letter-spacing: 3px;
+      color: var(--gray); text-transform: uppercase;
+      margin-right: 0.5rem;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.2rem;
+      border: 1px solid var(--border); border-radius: 2px;
+      background: transparent; color: var(--gray);
+      font-size: 0.7rem; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.3s; font-family: inherit;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    }
+    .filter-btn:hover { border-color: var(--red); color: var(--white); }
+    .filter-btn.active {
+      border-color: var(--red); background: rgba(255,70,85,0.1);
+      color: var(--white);
+    }
+    .filter-btn.competitivo.active { border-color: #50dc64; background: rgba(80,220,100,0.1); color: #50dc64; }
+    .filter-btn.fora.active { border-color: #888; background: rgba(136,136,136,0.1); color: #aaa; }
+
+    /* SEARCH */
+    .maps-search-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem 2rem;
+    }
+    .maps-search {
+      width: 100%; max-width: 400px;
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 0.7rem 1.2rem;
+      color: var(--white); font-size: 0.85rem;
+      font-family: inherit; outline: none;
+      transition: border-color 0.3s;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    .maps-search::placeholder { color: var(--gray); letter-spacing: 1px; }
+    .maps-search:focus { border-color: var(--red); }
+
+    /* GRID */
+    .maps-grid {
+      max-width: 1200px; margin: 0 auto;
+      padding: 1rem 2rem 6rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* CARD */
+    .map-card {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--border); border-radius: 2px;
+      background: var(--black2); cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      text-decoration: none; display: block;
+    }
+    .map-card:hover { border-color: var(--red); transform: translateY(-4px); }
+    .map-card:hover .map-card-img { transform: scale(1.05); }
+    .map-card:hover .map-card-hover-bar { width: 100%; }
+
+    .map-card-img-wrap {
+      position: relative; width: 100%; padding-bottom: 50%;
+      overflow: hidden;
+    }
+    .map-card-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; transition: transform 0.5s;
+      filter: brightness(0.75);
+    }
+    .map-card-pool-badge {
+      position: absolute; top: 0.8rem; right: 0.8rem;
+      padding: 0.25rem 0.7rem; border-radius: 2px;
+      font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+      font-weight: 700;
+    }
+    .map-card-pool-badge.competitivo {
+      background: rgba(80,220,100,0.15);
+      border: 1px solid rgba(80,220,100,0.4);
+      color: #50dc64;
+    }
+    .map-card-pool-badge.fora {
+      background: rgba(136,136,136,0.15);
+      border: 1px solid rgba(136,136,136,0.3);
+      color: #aaa;
+    }
+
+    .map-card-info {
+      padding: 1.2rem 1.5rem 1.5rem;
+      position: relative;
+    }
+    .map-card-location {
+      font-size: 0.6rem; letter-spacing: 3px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .map-card-name {
+      font-size: 1.6rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -1px;
+      color: var(--white); line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+    .map-card-desc {
+      font-size: 0.75rem; color: var(--gray);
+      line-height: 1.6; margin-bottom: 1rem;
+    }
+    .map-card-tags {
+      display: flex; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .map-tag {
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--border); border-radius: 2px;
+      font-size: 0.6rem; letter-spacing: 1px;
+      color: var(--gray); text-transform: uppercase;
+    }
+    .map-card-hover-bar {
+      position: absolute; bottom: 0; left: 0;
+      height: 2px; width: 0;
+      background: var(--red);
+      transition: width 0.4s;
+    }
+
+    /* NO RESULTS */
+    .no-results {
+      display: none; grid-column: 1/-1;
+      text-align: center; padding: 4rem;
+      color: var(--gray); font-size: 0.8rem;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+
+    /* STATS BAR */
+    .maps-stats {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem 1rem;
+      display: flex; gap: 2rem; align-items: center;
+    }
+    .maps-count {
+      font-size: 0.7rem; color: var(--gray);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .maps-count span { color: var(--white); font-weight: 700; }
+
+    @media (max-width: 768px) {
+      .maps-grid { grid-template-columns: 1fr; padding: 1rem 1rem 4rem; }
+      .maps-filters { padding: 2rem 1rem 0.5rem; }
+      .maps-search-wrap { padding: 0 1rem 1.5rem; }
+      .maps-stats { padding: 0 1rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Hub</a></li>
+    <li><a href="agentes.html">Agentes</a></li>
+    <li><a href="mapas.html" class="active">Mapas</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="maps-hero">
+  <div class="maps-hero-bg"></div>
+  <div class="maps-hero-grid"></div>
+  <div class="maps-hero-content">
+    <div class="maps-hero-label">// Battlefield</div>
+    <h1 class="maps-hero-title">TODOS OS<br/><span>MAPAS</span></h1>
+    <p class="maps-hero-sub">12 arenas · 2 dimensões · 1 Protocolo</p>
+  </div>
+</section>
+
+<!-- FILTROS -->
+<div class="maps-filters">
+  <span class="filter-label">// Filtrar:</span>
+  <button class="filter-btn active" data-filter="todos">Todos</button>
+  <button class="filter-btn competitivo" data-filter="competitivo">🟢 Competitivo</button>
+  <button class="filter-btn fora" data-filter="fora">⚫ Fora do Pool</button>
+</div>
+
+<!-- SEARCH -->
+<div class="maps-search-wrap">
+  <input class="maps-search" type="text" placeholder="🔍 Buscar mapa..." id="map-search"/>
+</div>
+
+<!-- STATS -->
+<div class="maps-stats">
+  <div class="maps-count">Mostrando <span id="map-count">12</span> mapas</div>
+</div>
+
+<!-- GRID -->
+<div class="maps-grid" id="maps-grid">
+
+  <!-- BIND -->
+  <a href="mapas/bind.html" class="map-card" data-pool="competitivo" data-name="bind">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://i.imgur.com/IR5Hzw4.jpeg" alt="Bind"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Marrocos</div>
+      <div class="map-card-name">Bind</div>
+      <div class="map-card-desc">Dois teleporters conectam os sites — sem mid, sem desculpa. Rotação rápida é lei aqui.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Teleporter</span>
+        <span class="map-tag">Marrocos</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- HAVEN -->
+  <a href="mapas/haven.html" class="map-card" data-pool="competitivo" data-name="haven">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://i.imgur.com/nzCngcz.jpeg" alt="Haven"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Butão</div>
+      <div class="map-card-name">Haven</div>
+      <div class="map-card-desc">O único mapa com 3 sites — controlar o meio é controlar o jogo inteiro. Caos organizado.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">3 Sites</span>
+        <span class="map-tag">Mid Control</span>
+        <span class="map-tag">Butão</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- SPLIT -->
+  <a href="mapas/split.html" class="map-card" data-pool="competitivo" data-name="split">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/d960549e-485c-e861-8d71-aa9d1aed12a2/splash.png" alt="Split"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Tóquio, Japão</div>
+      <div class="map-card-name">Split</div>
+      <div class="map-card-desc">Verticalmente denso com ropes e escadas — dominar a altura é dominar o round. Mapa de duelos apertados.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Vertical</span>
+        <span class="map-tag">Japão</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- ASCENT -->
+  <a href="mapas/ascent.html" class="map-card" data-pool="fora" data-name="ascent">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/7eaecc1b-4337-bbf6-6ab9-04b8f06b3319/splash.png" alt="Ascent"/>
+      <div class="map-card-pool-badge fora">Fora do Pool</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Veneza, Itália</div>
+      <div class="map-card-name">Ascent</div>
+      <div class="map-card-desc">Mid aberto com portas controláveis — o mapa mais clássico do VALORANT. Perfeito pra aprender o jogo.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Mid Aberto</span>
+        <span class="map-tag">Itália</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- ICEBOX -->
+  <a href="mapas/icebox.html" class="map-card" data-pool="fora" data-name="icebox">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/e2ad5c54-4114-a870-9641-8ea21279579a/splash.png" alt="Icebox"/>
+      <div class="map-card-pool-badge fora">Fora do Pool</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Ártico</div>
+      <div class="map-card-name">Icebox</div>
+      <div class="map-card-desc">Mapa gélido com ziplines e muita verticalidade — ângulos imprevisíveis que punem quem não conhece bem.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Zipline</span>
+        <span class="map-tag">Ártico</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- BREEZE -->
+  <a href="mapas/breeze.html" class="map-card" data-pool="competitivo" data-name="breeze">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/2fb9a4fd-47b8-4e7d-a969-74b4046ebd53/splash.png" alt="Breeze"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Triângulo das Bermudas</div>
+      <div class="map-card-name">Breeze</div>
+      <div class="map-card-desc">Espaços abertos e longos corredores — o paraíso dos snipers. Rifles longos dominam aqui sem piedade.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Longa Distância</span>
+        <span class="map-tag">Bermudas</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- FRACTURE -->
+  <a href="mapas/fracture.html" class="map-card" data-pool="fora" data-name="fracture">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/b529448b-4d60-346e-e89e-00a4c527a405/splash.png" alt="Fracture"/>
+      <div class="map-card-pool-badge fora">Fora do Pool</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Novo México, EUA</div>
+      <div class="map-card-name">Fracture</div>
+      <div class="map-card-desc">Layout em H com ziplines — atacantes entram dos dois lados ao mesmo tempo. Defesa nunca foi tão difícil.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Layout H</span>
+        <span class="map-tag">EUA</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- PEARL -->
+  <a href="mapas/pearl.html" class="map-card" data-pool="competitivo" data-name="pearl">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/fd267378-4d1d-484f-ff52-77821ed10dc2/splash.png" alt="Pearl"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Lisboa, Portugal</div>
+      <div class="map-card-name">Pearl</div>
+      <div class="map-card-desc">Cidade subaquática portuguesa — mid denso e complexo. Mapa que recompensa comunicação e controle de espaço.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Subaquático</span>
+        <span class="map-tag">Portugal</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- LOTUS -->
+  <a href="mapas/lotus.html" class="map-card" data-pool="fora" data-name="lotus">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/2fe4ed3a-450a-948b-6d6b-e89a78e680a9/splash.png" alt="Lotus"/>
+      <div class="map-card-pool-badge fora">Fora do Pool</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Índia</div>
+      <div class="map-card-name">Lotus</div>
+      <div class="map-card-desc">Três sites com portais giratórios — rotação criativa e leitura de jogo definem quem vence aqui.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">3 Sites</span>
+        <span class="map-tag">Portais</span>
+        <span class="map-tag">Índia</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- SUNSET -->
+  <a href="mapas/sunset.html" class="map-card" data-pool="fora" data-name="sunset">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://i.imgur.com/wBJIyVf.jpeg" alt="Sunset"/>
+      <div class="map-card-pool-badge fora">Fora do Pool</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Los Angeles, EUA</div>
+      <div class="map-card-name">Sunset</div>
+      <div class="map-card-desc">Ruas de LA com mechânica de portão no mid — controlar ou abrir o portão define o ritmo do round.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Portão Mid</span>
+        <span class="map-tag">Los Angeles</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- ABYSS -->
+  <a href="mapas/abyss.html" class="map-card" data-pool="competitivo" data-name="abyss">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://media.valorant-api.com/maps/224b0a95-48b9-f703-1bd8-67aca101a61f/splash.png" alt="Abyss"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Oceano Índico</div>
+      <div class="map-card-name">Abyss</div>
+      <div class="map-card-desc">Sem paredes nos flancos — cair é morrer. Posicionamento extremo e foco total ou o abismo te engole.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Sem Paredes</span>
+        <span class="map-tag">Oceano Índico</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <!-- CORRODE -->
+  <a href="mapas/corrode.html" class="map-card" data-pool="competitivo" data-name="corrode">
+    <div class="map-card-img-wrap">
+      <img class="map-card-img" src="https://i.imgur.com/UZCMVp3.jpeg" alt="Corrode"/>
+      <div class="map-card-pool-badge competitivo">Competitivo</div>
+    </div>
+    <div class="map-card-info">
+      <div class="map-card-location">// Europa do Leste</div>
+      <div class="map-card-name">Corrode</div>
+      <div class="map-card-desc">O mais novo do pool — industrial, denso e cheio de ângulos perigosos. Mapa que pune erros de posicionamento.</div>
+      <div class="map-card-tags">
+        <span class="map-tag">2 Sites</span>
+        <span class="map-tag">Industrial</span>
+        <span class="map-tag">Europa</span>
+      </div>
+    </div>
+    <div class="map-card-hover-bar"></div>
+  </a>
+
+  <div class="no-results" id="no-results">✕ Nenhum mapa encontrado</div>
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  // FILTROS
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const mapCards = document.querySelectorAll('.map-card');
+  const noResults = document.getElementById('no-results');
+  const mapCount = document.getElementById('map-count');
+  const searchInput = document.getElementById('map-search');
+
+  let currentFilter = 'todos';
+  let currentSearch = '';
+
+  function updateGrid() {
+    let visible = 0;
+    mapCards.forEach(card => {
+      const pool = card.dataset.pool;
+      const name = card.dataset.name;
+      const matchFilter = currentFilter === 'todos' || pool === currentFilter;
+      const matchSearch = name.includes(currentSearch.toLowerCase());
+      if (matchFilter && matchSearch) {
+        card.style.display = 'block';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    mapCount.textContent = visible;
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      updateGrid();
+    });
+  });
+
+  searchInput.addEventListener('input', e => {
+    currentSearch = e.target.value;
+    updateGrid();
+  });
+
+  // REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

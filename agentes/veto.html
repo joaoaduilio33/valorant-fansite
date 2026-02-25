@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Veto</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .agent-hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      padding: 0 3rem 4rem; overflow: hidden;
+    }
+    .agent-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(180,60,60,0.12), transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(120,20,20,0.09), transparent 60%),
+                  linear-gradient(135deg, #0d0000, #0a0202);
+    }
+    .agent-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(180,60,60,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180,60,60,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* mutação DNA */
+    .dna-pulse {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 40% 60% at 72% 45%, rgba(180,60,60,0.09), transparent),
+        radial-gradient(ellipse 20% 30% at 25% 65%, rgba(140,30,30,0.06), transparent),
+        radial-gradient(ellipse 30% 20% at 60% 15%, rgba(180,60,60,0.05), transparent);
+      animation: dna-drift 7s ease-in-out infinite alternate;
+    }
+    @keyframes dna-drift {
+      from { opacity: 0.5; transform: scale(1); }
+      to   { opacity: 1; transform: scale(1.04); }
+    }
+    .agent-hero-img {
+      position: absolute; right: 5%; bottom: 0;
+      height: 91%; object-fit: contain;
+      opacity: 0; animation: slide-in-right 1s 0.3s forwards;
+      filter: drop-shadow(0 0 60px rgba(180,60,60,0.5)) drop-shadow(0 0 25px rgba(140,20,20,0.35));
+    }
+    @keyframes slide-in-right {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .agent-hero-content { position: relative; z-index: 2; max-width: 600px; }
+    .agent-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 2rem; transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .agent-back:hover { color: #b43c3c; }
+    .agent-role-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(180,60,60,0.4); border-radius: 2px;
+      background: rgba(180,60,60,0.08);
+      color: #b43c3c; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .agent-hero-name {
+      font-size: clamp(4rem, 10vw, 9rem); font-weight: 900;
+      line-height: 0.9; text-transform: uppercase; letter-spacing: -3px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .agent-hero-name span { color: transparent; -webkit-text-stroke: 2px #b43c3c; display: block; }
+    .agent-hero-origin {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .agent-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase; border-radius: 2px;
+    }
+    .agent-content { max-width: 1000px; margin: 0 auto; padding: 5rem 3rem; }
+    .block-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .block-label-line { width: 30px; height: 1px; background: #b43c3c; }
+    .block-label-text { font-size: 0.65rem; letter-spacing: 4px; color: #b43c3c; text-transform: uppercase; }
+    .block-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); margin-bottom: 2rem; }
+    .trailer-wrap {
+      position: relative; width: 100%; padding-bottom: 56.25%;
+      border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+      margin-bottom: 5rem;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+    .trailer-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .bio-box {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 2rem; margin-bottom: 5rem;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+    .bio-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #b43c3c, transparent);
+    }
+    .bio-text { font-size: 0.9rem; color: var(--gray); line-height: 1.9; }
+    .bio-text span { color: var(--white); }
+    .abilities-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .ability-card {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      transition: border-color 0.3s, transform 0.3s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .ability-card:hover { border-color: #b43c3c; transform: translateY(-3px); }
+    .ability-key { font-size: 0.65rem; letter-spacing: 3px; color: #b43c3c; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .ability-name { font-size: 1rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .ability-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.6; }
+    .ability-type {
+      display: inline-block; margin-top: 0.8rem; padding: 0.2rem 0.6rem;
+      background: rgba(180,60,60,0.08); border: 1px solid rgba(180,60,60,0.2);
+      color: #b43c3c; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; border-radius: 2px;
+    }
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .stat-box {
+      flex: 1; min-width: 140px; background: var(--black2);
+      border: 1px solid var(--border); border-radius: 2px; padding: 1.2rem; text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num { font-size: 2rem; font-weight: 900; color: #b43c3c; line-height: 1; }
+    .stat-box-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-top: 0.3rem; }
+    .agents-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 3rem; border-top: 1px solid var(--border);
+    }
+    .agent-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .agent-nav-btn:hover { color: #b43c3c; }
+    .agent-nav-btn img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); background: var(--black2); }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .agent-hero { padding: 7rem 1.5rem 3rem; min-height: auto; }
+      .agent-hero-img { height: 50%; opacity: 0.3; }
+      .agent-content { padding: 3rem 1.5rem; }
+      .abilities-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html" class="active">Agentes</a></li>
+    <li><a href="../mapas.html">Mapas</a></li>
+  </ul>
+</nav>
+
+<section class="agent-hero">
+  <div class="agent-hero-bg"></div>
+  <div class="agent-hero-grid"></div>
+  <div class="dna-pulse"></div>
+  <img class="agent-hero-img"
+    src="https://i.imgur.com/R0Q0pg0.png"
+    alt="Veto"/>
+  <div class="agent-hero-content">
+    <a href="../agentes.html" class="agent-back">← Voltar para Agentes</a>
+    <div class="agent-role-badge">🛡️ Sentinela</div>
+    <h1 class="agent-hero-name">
+      Veto
+      <span>MUTAÇÃO 🧬</span>
+    </h1>
+    <p class="agent-hero-origin">📍 Senegal</p>
+    <div class="agent-hero-tags">
+      <span class="hero-tag">DNA Mutação</span>
+      <span class="hero-tag">Anti-Utility</span>
+      <span class="hero-tag">Supressão</span>
+    </div>
+  </div>
+</section>
+
+<div class="agent-content">
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Trailer Oficial</span>
+    </div>
+    <h2 class="block-title">Cinematic</h2>
+    <div class="trailer-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/2FLY-gn-hGQ"
+        title="Veto Agent Trailer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Lore</span>
+    </div>
+    <h2 class="block-title">Biografia</h2>
+    <div class="bio-box">
+      <p class="bio-text">
+        <span>Veto</span> é um agente senegalês portador de uma
+        <span>mutação genética avassaladora</span> — a Radivore Mutation —
+        que lhe concede o poder de anular completamente
+        as habilidades e tecnologias dos inimigos.
+        No campo de batalha de Veto,
+        <span>gunplay é sua única garantia</span>.
+        Ele não suprime com máquinas como KAY/O,
+        nem com pesadelos como Fade —
+        ele suprime com o próprio <span>DNA evoluído</span>,
+        tornando Radiantes e gadgets igualmente inúteis.
+        O Agente 29 não joga pelas regras do combate.
+        Ele <span>reescreve essas regras</span>. 🧬
+      </p>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Abilities</span>
+    </div>
+    <h2 class="block-title">Habilidades</h2>
+    <div class="abilities-grid">
+      <div class="ability-card">
+        <div class="ability-key">// C</div>
+        <div class="ability-name">Crosscut</div>
+        <div class="ability-desc">
+          Posiciona um vórtex no chão. Enquanto estiver no alcance e olhando para ele, pode reativar para teleportar instantaneamente ao dispositivo.
+        </div>
+        <span class="ability-type">Teleporte</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// Q</div>
+        <div class="ability-name">Chokehold</div>
+        <div class="ability-desc">
+          Lança um fragmento de mutação que cria uma armadilha ao pousar — prende inimigos no lugar, deixando-os surdos e com decay.
+        </div>
+        <span class="ability-type">Armadilha</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// E</div>
+        <div class="ability-name">Interceptor</div>
+        <div class="ability-desc">
+          Instala o Phage — dispositivo que destrói qualquer utility inimiga que ricocheteia em jogadores ou pode ser quebrada por tiros. Anti-meta puro.
+        </div>
+        <span class="ability-type">Anti-Utility</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// X — Ultimate</div>
+        <div class="ability-name">Evolution</div>
+        <div class="ability-desc">
+          Ativa a mutação completa — Veto ganha stim de combate, regeneração de vida e imunidade total a debuffs por toda a duração.
+        </div>
+        <span class="ability-type">Ultimate</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-box-num">4</div><div class="stat-box-label">Habilidades</div></div>
+      <div class="stat-box"><div class="stat-box-num">7</div><div class="stat-box-label">Ultimate Cost</div></div>
+      <div class="stat-box"><div class="stat-box-num">S</div><div class="stat-box-label">Tier</div></div>
+      <div class="stat-box"><div class="stat-box-num">🧬</div><div class="stat-box-label">O Mutante</div></div>
+    </div>
+  </div>
+
+  <div class="agents-nav reveal">
+    <a href="vyse.html" class="agent-nav-btn">
+      <img src="https://i.imgur.com/mulfrhJ.png" alt="Vyse"/>
+      ← Vyse
+    </a>
+    <a href="jett.html" class="agent-nav-btn">
+  Jett →
+  <img src="https://media.valorant-api.com/agents/add6443a-41bd-e414-f6ad-e58d267f4e95/displayicon.png" alt="Jett"/>
+</a>
+
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>
