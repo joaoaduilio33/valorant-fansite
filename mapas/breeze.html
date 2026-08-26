@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Breeze</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .map-hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      padding: 0 3rem 4rem; overflow: hidden;
+    }
+    .map-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(30,160,120,0.13), transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 15% 80%, rgba(20,100,80,0.09), transparent 60%),
+                  linear-gradient(135deg, #000d08, #000905);
+    }
+    .map-hero-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0.20; filter: saturate(0.6);
+    }
+    .map-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,13,8,0.95) 40%, rgba(0,13,8,0.3) 100%),
+                  linear-gradient(to top, rgba(0,13,8,0.9) 0%, transparent 50%);
+    }
+    .map-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(30,160,120,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,160,120,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .map-hero-content { position: relative; z-index: 2; max-width: 650px; }
+    .map-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 2rem; transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .map-back:hover { color: #1ea078; }
+    .map-pool-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(80,220,100,0.4); border-radius: 2px;
+      background: rgba(80,220,100,0.08);
+      color: #50dc64; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .rework-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(255,180,0,0.5); border-radius: 2px;
+      background: rgba(255,180,0,0.08);
+      color: #ffb400; font-size: 0.65rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 1rem; margin-left: 0.5rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .map-hero-name {
+      font-size: clamp(5rem, 12vw, 11rem); font-weight: 900;
+      line-height: 0.85; text-transform: uppercase; letter-spacing: -4px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .map-hero-name span { color: transparent; -webkit-text-stroke: 2px #1ea078; display: block; }
+    .map-hero-location {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .map-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase; border-radius: 2px;
+    }
+    .map-content { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; }
+    .block-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .block-label-line { width: 30px; height: 1px; background: #1ea078; }
+    .block-label-text { font-size: 0.65rem; letter-spacing: 4px; color: #1ea078; text-transform: uppercase; }
+    .block-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); margin-bottom: 2rem; }
+    .map-overview {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      margin-bottom: 5rem; align-items: center;
+    }
+    .map-overview-text { font-size: 0.9rem; color: var(--gray); line-height: 1.9; }
+    .map-overview-text span { color: var(--white); }
+    .map-overview-img {
+      width: 100%; border: 1px solid var(--border); border-radius: 2px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+
+    /* REWORK BANNER */
+    .rework-banner {
+      background: var(--black2); border: 1px solid rgba(255,180,0,0.3);
+      border-left: 3px solid #ffb400;
+      border-radius: 2px; padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .rework-icon { font-size: 1.5rem; line-height: 1; }
+    .rework-content
+    .rework-title { font-size: 0.7rem; letter-spacing: 3px; color: #ffb400; text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem; }
+    .rework-desc { font-size: 0.8rem; color: var(--gray); line-height: 1.6; }
+    .rework-desc span { color: var(--white); }
+
+    .minimap-section { margin-bottom: 5rem; }
+    .minimap-wrap {
+      width: 100%; border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      background: var(--black2);
+    }
+    .minimap-wrap img { width: 100%; display: block; }
+    .callouts-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .callout-section {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .callout-section-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    }
+    .callout-section-title.site-a { color: var(--red); border-color: rgba(255,70,85,0.2); }
+    .callout-section-title.site-b { color: #50a0c8; border-color: rgba(80,160,200,0.2); }
+    .callout-section-title.mid { color: #1ea078; border-color: rgba(30,160,120,0.2); }
+    .callout-list { list-style: none; padding: 0; margin: 0; }
+    .callout-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.75rem;
+    }
+    .callout-list li:last-child { border-bottom: none; }
+    .callout-name { color: var(--white); font-weight: 600; letter-spacing: 1px; }
+    .callout-alt { color: var(--gray); font-size: 0.65rem; }
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .stat-box {
+      flex: 1; min-width: 140px; background: var(--black2);
+      border: 1px solid var(--border); border-radius: 2px; padding: 1.2rem; text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num { font-size: 2rem; font-weight: 900; color: #1ea078; line-height: 1; }
+    .stat-box-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-top: 0.3rem; }
+    .comp-section { margin-bottom: 5rem; }
+    .comp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .comp-card {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .comp-card-title { font-size: 0.7rem; letter-spacing: 3px; color: #1ea078; text-transform: uppercase; margin-bottom: 1rem; }
+    .comp-agents { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .comp-agent { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .comp-agent img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
+    .comp-agent span { font-size: 0.55rem; letter-spacing: 1px; color: var(--gray); text-transform: uppercase; }
+    .comp-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.6; }
+    .maps-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 3rem; border-top: 1px solid var(--border);
+    }
+    .map-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .map-nav-btn:hover { color: #1ea078; }
+    .map-nav-btn img { width: 64px; height: 36px; object-fit: cover; border-radius: 2px; border: 1px solid var(--border); }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .map-hero { padding: 7rem 1.5rem 3rem; }
+      .map-content { padding: 3rem 1.5rem; }
+      .map-overview { grid-template-columns: 1fr; }
+      .callouts-grid { grid-template-columns: 1fr; }
+      .comp-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html">Agentes</a></li>
+    <li><a href="../mapas.html" class="active">Mapas</a></li>
+  </ul>
+</nav>
+
+<section class="map-hero">
+  <img class="map-hero-img" src="https://media.valorant-api.com/maps/2fb9a4fd-47b8-4e7d-a969-74b4046ebd53/splash.png" alt="Breeze"/>
+  <div class="map-hero-overlay"></div>
+  <div class="map-hero-grid"></div>
+  <div class="map-hero-content">
+    <a href="../mapas.html" class="map-back">← Voltar para Mapas</a>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <div class="map-pool-badge">🟢 Competitivo</div>
+      <div class="rework-badge">🔨 Rework 2026</div>
+    </div>
+    <h1 class="map-hero-name">
+      Breeze
+      <span>CARIBE 🌊</span>
+    </h1>
+    <p class="map-hero-location">📍 Caribe · 2 Sites · Open Spaces</p>
+    <div class="map-hero-tags">
+      <span class="hero-tag">Long Sightlines</span>
+      <span class="hero-tag">Sniper Heaven</span>
+      <span class="hero-tag">Open Mid</span>
+      <span class="hero-tag">Verticality</span>
+    </div>
+  </div>
+</section>
+
+<div class="map-content">
+
+  <div class="reveal" style="margin-bottom:5rem;">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Overview</span>
+    </div>
+
+    <div class="rework-banner">
+      <div class="rework-icon">🔨</div>
+      <div class="rework-content">
+        <div class="rework-title">Rework 2026 — Patch v12.00</div>
+        <p class="rework-desc">
+          Breeze voltou ao pool competitivo em <span>Janeiro de 2026</span> com um grande rework.
+          O mapa ficou <span>mais compacto</span> — A Site perdeu a escada principal e o hall de entrada ATK.
+          Mid foi <span>estreitado</span>, o boost agora exige habilidade de agente e o Elbow foi elevado.
+          B Site teve <span>menos mudanças</span> — wall estendida bloqueando visão de mid e Cubby um pouco mais fundo.
+        </p>
+      </div>
+    </div>
+
+    <div class="map-overview">
+      <div>
+        <h2 class="block-title">Sobre o Mapa</h2>
+        <p class="map-overview-text">
+          <span>Breeze</span> é o mapa mais aberto do VALORANT —
+          ambientado em <span>ruínas caribenhas tropicais</span> com praias e cavernas à beira-mar.
+          Famoso pelos <span>sightlines imensos</span> e pelas batalhas de Operator em Bridge,
+          é o paraíso dos atiradores de longa distância.
+          Após o rework de 2026, o mapa ficou mais <span>compacto e agressivo</span>,
+          com menos ângulos absurdos e melhor controle de Mid.
+          <span>Sentinelas dominam</span> com 61.9% de win rate médio —
+          a maior de qualquer role no mapa, reflexo de quão importante é
+          travar flancos e controlar espaço no Breeze.
+        </p>
+      </div>
+      <img class="map-overview-img"
+        src="https://media.valorant-api.com/maps/2fb9a4fd-47b8-4e7d-a969-74b4046ebd53/splash.png"
+        alt="Breeze Overview"/>
+    </div>
+  </div>
+
+  <div class="minimap-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Minimap</span>
+    </div>
+    <h2 class="block-title">Mapa 2D</h2>
+    <div class="minimap-wrap">
+      <img src="https://media.valorant-api.com/maps/2fb9a4fd-47b8-4e7d-a969-74b4046ebd53/displayicon.png" alt="Breeze Minimap"/>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Callouts</span>
+    </div>
+    <h2 class="block-title">Nomes dos Locais</h2>
+    <div class="callouts-grid">
+
+      <div class="callout-section">
+        <div class="callout-section-title site-a">⚔️ Site A</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">A Main</span><span class="callout-alt">Entrada A</span></li>
+          <li><span class="callout-name">A Lobby</span><span class="callout-alt">Área Aberta ATK</span></li>
+          <li><span class="callout-name">A Bridge</span><span class="callout-alt">Ponte A</span></li>
+          <li><span class="callout-name">A Ramp</span><span class="callout-alt">Rampa DEF</span></li>
+          <li><span class="callout-name">A Cubby</span><span class="callout-alt">Cantinho A</span></li>
+          <li><span class="callout-name">A Pyramids</span><span class="callout-alt">Pirâmides A</span></li>
+          <li><span class="callout-name">A Box</span><span class="callout-alt">Caixa Amarela</span></li>
+          <li><span class="callout-name">Mid Doors</span><span class="callout-alt">Porta Mid → A</span></li>
+        </ul>
+      </div>
+
+      <div class="callout-section">
+        <div class="callout-section-title site-b">🛡️ Site B</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">B Main</span><span class="callout-alt">Entrada B</span></li>
+          <li><span class="callout-name">B Window</span><span class="callout-alt">Janela B</span></li>
+          <li><span class="callout-name">B Cubby</span><span class="callout-alt">Cantinho B</span></li>
+          <li><span class="callout-name">B Wall</span><span class="callout-alt">Parede B</span></li>
+          <li><span class="callout-name">B Arches</span><span class="callout-alt">Arcos B</span></li>
+          <li><span class="callout-name">Back B</span><span class="callout-alt">Fundo B</span></li>
+          <li><span class="callout-name">Snowman</span><span class="callout-alt">Boneco de Neve</span></li>
+          <li><span class="callout-name">CT</span><span class="callout-alt">Saída CT</span></li>
+        </ul>
+      </div>
+
+      <div class="callout-section">
+        <div class="callout-section-title mid">🗺️ Mid / Geral</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">Bottom Mid</span><span class="callout-alt">Mid ATK</span></li>
+          <li><span class="callout-name">Top Mid</span><span class="callout-alt">Mid DEF</span></li>
+          <li><span class="callout-name">Mid Pillar</span><span class="callout-alt">Pilar Mid</span></li>
+          <li><span class="callout-name">Mid Hall</span><span class="callout-alt">Corredor Mid</span></li>
+          <li><span class="callout-name">Window / Nest</span><span class="callout-alt">Janela DEF</span></li>
+          <li><span class="callout-name">Elbow</span><span class="callout-alt">Cotovelo Mid</span></li>
+          <li><span class="callout-name">Tunnel</span><span class="callout-alt">Túnel B→Mid</span></li>
+          <li><span class="callout-name">Attacker Spawn</span><span class="callout-alt">Spawn ATK</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats do Mapa</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-box-num">2</div><div class="stat-box-label">Sites</div></div>
+      <div class="stat-box"><div class="stat-box-num">17.989</div><div class="stat-box-label">Partidas Analisadas</div></div>
+      <div class="stat-box"><div class="stat-box-num">50.4%</div><div class="stat-box-label">Win Rate Ataque</div></div>
+      <div class="stat-box"><div class="stat-box-num">61.9%</div><div class="stat-box-label">WR Sentinelas</div></div>
+    </div>
+  </div>
+
+  <div class="comp-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Meta</span>
+    </div>
+    <h2 class="block-title">Melhores Composições</h2>
+    <div class="comp-grid">
+
+      <div class="comp-card">
+        <div class="comp-card-title">// Comp Meta 2026 — Long Range</div>
+        <div class="comp-agents">
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/add6443a-41bd-45d7-be5e-b5f8a9f74f66/displayiconsmall.png"/>
+            <span>Jett</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/320b2a48-4d9b-a075-30f1-1f93a9b638fa/displayiconsmall.png"/>
+            <span>Sova</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/707eab51-4836-f488-046a-cda6bf494859/displayiconsmall.png"/>
+            <span>Viper</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/cc8b64c8-4b25-4ff9-6e7f-37b4da43d235/displayiconsmall.png"/>
+            <span>Deadlock</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/1dbf2edd-4729-0984-3115-daa5eed44993/displayiconsmall.png"/>
+            <span>Clove</span>
+          </div>
+        </div>
+        <p class="comp-desc">Jett com Operator domina Bridge e Window, Sova limpa os dois sites com recon bolts, Viper corta sightlines com wall no mid e B, Deadlock prende flancos e Clove smoke versátil para execuções em A via Mid Doors.</p>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-card-title">// Comp Clássica — Pro Play</div>
+        <div class="comp-agents">
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/add6443a-41bd-45d7-be5e-b5f8a9f74f66/displayiconsmall.png"/>
+            <span>Jett</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/320b2a48-4d9b-a075-30f1-1f93a9b638fa/displayiconsmall.png"/>
+            <span>Sova</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/707eab51-4836-f488-046a-cda6bf494859/displayiconsmall.png"/>
+            <span>Viper</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/117ed9e3-49f3-6512-3ccf-0cada7e3823b/displayiconsmall.png"/>
+            <span>Cypher</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/6f2a04ca-43e0-be17-7f36-b3908627744d/displayiconsmall.png"/>
+            <span>Skye</span>
+          </div>
+        </div>
+        <p class="comp-desc">O clássico de pro play — Jett com OP fecha sightlines críticos, Viper wall divide o mapa, Sova faz recon nos sites, Cypher com trips nos flancos de B e Skye abre informação e cura nos retakes.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="maps-nav reveal">
+    <a href="icebox.html" class="map-nav-btn">
+      <img src="https://media.valorant-api.com/maps/e2ad5c54-4114-a870-9641-8ea21279579a/splash.png" alt="Icebox"/>
+      ← Icebox
+    </a>
+    <a href="../mapas.html" class="btn btn-red" style="font-size:0.75rem;">Ver Todos</a>
+    <a href="fracture.html" class="map-nav-btn">
+      Fracture →
+      <img src="https://media.valorant-api.com/maps/b529448b-4d60-346e-e89e-00a4c527a405/splash.png" alt="Fracture"/>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

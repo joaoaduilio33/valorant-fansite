@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Omen</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .agent-hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      padding: 0 3rem 4rem; overflow: hidden;
+    }
+    .agent-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(120,60,200,0.13), transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(60,0,120,0.1), transparent 60%),
+                  linear-gradient(135deg, #080810, #06000f);
+    }
+    .agent-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(120,60,200,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120,60,200,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* partículas sombrias */
+    .shadow-orbs {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(circle 120px at 30% 30%, rgba(120,60,200,0.06), transparent),
+        radial-gradient(circle 80px at 60% 70%, rgba(80,20,160,0.05), transparent),
+        radial-gradient(circle 60px at 80% 20%, rgba(100,40,180,0.04), transparent);
+    }
+    .agent-hero-img {
+      position: absolute; right: 5%; bottom: 0;
+      height: 95%; object-fit: contain;
+      opacity: 0; animation: slide-in-right 1s 0.3s forwards;
+      filter: drop-shadow(0 0 60px rgba(120,60,200,0.5)) drop-shadow(0 0 20px rgba(80,20,160,0.4));
+    }
+    @keyframes slide-in-right {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .agent-hero-content { position: relative; z-index: 2; max-width: 600px; }
+    .agent-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 2rem; transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .agent-back:hover { color: #7840c8; }
+    .agent-role-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(120,60,200,0.4); border-radius: 2px;
+      background: rgba(120,60,200,0.08);
+      color: #7840c8; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .agent-hero-name {
+      font-size: clamp(4rem, 10vw, 9rem); font-weight: 900;
+      line-height: 0.9; text-transform: uppercase; letter-spacing: -3px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .agent-hero-name span { color: transparent; -webkit-text-stroke: 2px #7840c8; display: block; }
+    .agent-hero-origin {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .agent-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase; border-radius: 2px;
+    }
+    .agent-content { max-width: 1000px; margin: 0 auto; padding: 5rem 3rem; }
+    .block-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .block-label-line { width: 30px; height: 1px; background: #7840c8; }
+    .block-label-text { font-size: 0.65rem; letter-spacing: 4px; color: #7840c8; text-transform: uppercase; }
+    .block-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); margin-bottom: 2rem; }
+    .trailer-wrap {
+      position: relative; width: 100%; padding-bottom: 56.25%;
+      border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+      margin-bottom: 5rem;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+    .trailer-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .bio-box {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 2rem; margin-bottom: 5rem;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+    .bio-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #7840c8, transparent);
+    }
+    .bio-text { font-size: 0.9rem; color: var(--gray); line-height: 1.9; }
+    .bio-text span { color: var(--white); }
+    .abilities-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .ability-card {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      transition: border-color 0.3s, transform 0.3s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .ability-card:hover { border-color: #7840c8; transform: translateY(-3px); }
+    .ability-key { font-size: 0.65rem; letter-spacing: 3px; color: #7840c8; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .ability-name { font-size: 1rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .ability-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.6; }
+    .ability-type {
+      display: inline-block; margin-top: 0.8rem; padding: 0.2rem 0.6rem;
+      background: rgba(120,60,200,0.1); border: 1px solid rgba(120,60,200,0.2);
+      color: #7840c8; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; border-radius: 2px;
+    }
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .stat-box {
+      flex: 1; min-width: 140px; background: var(--black2);
+      border: 1px solid var(--border); border-radius: 2px; padding: 1.2rem; text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num { font-size: 2rem; font-weight: 900; color: #7840c8; line-height: 1; }
+    .stat-box-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-top: 0.3rem; }
+    .agents-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 3rem; border-top: 1px solid var(--border);
+    }
+    .agent-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .agent-nav-btn:hover { color: #7840c8; }
+    .agent-nav-btn img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); background: var(--black2); }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .agent-hero { padding: 7rem 1.5rem 3rem; min-height: auto; }
+      .agent-hero-img { height: 50%; opacity: 0.3; }
+      .agent-content { padding: 3rem 1.5rem; }
+      .abilities-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html" class="active">Agentes</a></li>
+    <li><a href="../mapas.html">Mapas</a></li>
+  </ul>
+</nav>
+
+<section class="agent-hero">
+  <div class="agent-hero-bg"></div>
+  <div class="agent-hero-grid"></div>
+  <div class="shadow-orbs"></div>
+  <img class="agent-hero-img"
+    src="https://media.valorant-api.com/agents/8e253930-4c05-31dd-1b6c-968525494517/fullportrait.png"
+    alt="Omen"/>
+  <div class="agent-hero-content">
+    <a href="../agentes.html" class="agent-back">← Voltar para Agentes</a>
+    <div class="agent-role-badge">🎛 Controlador</div>
+    <h1 class="agent-hero-name">
+      Omen
+      <span>A SOMBRA 👁</span>
+    </h1>
+    <p class="agent-hero-origin">📍 Desconhecida</p>
+    <div class="agent-hero-tags">
+      <span class="hero-tag">Sombra</span>
+      <span class="hero-tag">Teleporte</span>
+      <span class="hero-tag">Medo</span>
+    </div>
+  </div>
+</section>
+
+<div class="agent-content">
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Trailer Oficial</span>
+    </div>
+    <h2 class="block-title">Cinematic</h2>
+    <div class="trailer-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/oFtPQKbMXpg"
+        title="Omen Agent Trailer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Lore</span>
+    </div>
+    <h2 class="block-title">Biografia</h2>
+    <div class="bio-box">
+      <p class="bio-text">
+        <span>Omen</span> é uma entidade de origem desconhecida — um ser que existe entre
+        a luz e a escuridão, perseguido por memórias fragmentadas de uma vida que
+        talvez nunca tenha existido. Ninguém sabe ao certo <span>o que ele é</span>,
+        nem de onde veio. Ele usa as sombras como arma, teleportando pelo mapa
+        e cegando inimigos com trevas puras.
+        Assustador, silencioso e imprevisível —
+        <span>você não sabe de onde ele vem</span>,
+        só que já é tarde demais quando descobre. 👁
+      </p>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Abilities</span>
+    </div>
+    <h2 class="block-title">Habilidades</h2>
+    <div class="abilities-grid">
+      <div class="ability-card">
+        <div class="ability-key">// C</div>
+        <div class="ability-name">Shrouded Step</div>
+        <div class="ability-desc">
+          Omen visualiza um ponto próximo e teleporta silenciosamente até ele — perfeito para reposicionamento furtivo e flancos inesperados.
+        </div>
+        <span class="ability-type">Teleporte</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// Q</div>
+        <div class="ability-name">Paranoia</div>
+        <div class="ability-desc">
+          Dispara uma sombra que atravessa paredes e cega todos os inimigos que toca — causando desorientação e pânico total.
+        </div>
+        <span class="ability-type">Cegueira</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// E</div>
+        <div class="ability-name">Dark Cover</div>
+        <div class="ability-desc">
+          Lança esferas de escuridão que criam smokes impenetráveis em qualquer ponto do mapa, podendo atravessar paredes.
+        </div>
+        <span class="ability-type">Smoke</span>
+      </div>
+      <div class="ability-card">
+        <div class="ability-key">// X — Ultimate</div>
+        <div class="ability-name">From the Shadows</div>
+        <div class="ability-desc">
+          Omen escolhe qualquer ponto do mapa e teleporta até lá. Durante o trajeto vira uma sombra — se detectado, volta à origem.
+        </div>
+        <span class="ability-type">Ultimate</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-box-num">4</div><div class="stat-box-label">Habilidades</div></div>
+      <div class="stat-box"><div class="stat-box-num">7</div><div class="stat-box-label">Ultimate Cost</div></div>
+      <div class="stat-box"><div class="stat-box-num">S</div><div class="stat-box-label">Tier</div></div>
+      <div class="stat-box"><div class="stat-box-num">👁</div><div class="stat-box-label">A Sombra</div></div>
+    </div>
+  </div>
+
+  <div class="agents-nav reveal">
+    <a href="viper.html" class="agent-nav-btn">
+      <img src="https://i.imgur.com/UwtQzx1.png" alt="Viper"/>
+      ← Viper
+    </a>
+    <a href="../agentes.html" class="btn btn-red" style="font-size:0.75rem;">Ver Todos</a>
+    <a href="astra.html" class="agent-nav-btn">
+      Astra →
+      <img src="https://i.imgur.com/nr4qlKr.png" alt="Astra"/>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

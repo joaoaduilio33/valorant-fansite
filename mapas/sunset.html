@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Sunset</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    .map-hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      padding: 0 3rem 4rem; overflow: hidden;
+    }
+    .map-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(220,140,30,0.14), transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 15% 80%, rgba(200,80,20,0.10), transparent 60%),
+                  linear-gradient(135deg, #0d0700, #090400);
+    }
+    .map-hero-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0.20; filter: saturate(0.6);
+    }
+    .map-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(13,7,0,0.95) 40%, rgba(13,7,0,0.3) 100%),
+                  linear-gradient(to top, rgba(13,7,0,0.9) 0%, transparent 50%);
+    }
+    .map-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(220,140,30,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(220,140,30,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .map-hero-content { position: relative; z-index: 2; max-width: 650px; }
+    .map-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 2rem; transition: color 0.3s;
+      opacity: 0; animation: fade-up 0.6s 0.1s forwards;
+    }
+    .map-back:hover { color: #dc8c1e; }
+    .map-pool-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(136,136,136,0.4); border-radius: 2px;
+      background: rgba(136,136,136,0.08);
+      color: #aaa; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .la-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(220,140,30,0.5); border-radius: 2px;
+      background: rgba(220,140,30,0.08);
+      color: #dc8c1e; font-size: 0.65rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 1rem; margin-left: 0.5rem;
+      opacity: 0; animation: fade-up 0.6s 0.3s forwards;
+    }
+    .map-hero-name {
+      font-size: clamp(4.5rem, 11vw, 10rem); font-weight: 900;
+      line-height: 0.85; text-transform: uppercase; letter-spacing: -4px;
+      color: var(--white);
+      opacity: 0; animation: fade-up 0.6s 0.5s forwards;
+    }
+    .map-hero-name span { color: transparent; -webkit-text-stroke: 2px #dc8c1e; display: block; }
+    .map-hero-location {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-top: 1rem; margin-bottom: 2rem;
+      opacity: 0; animation: fade-up 0.6s 0.7s forwards;
+    }
+    .map-hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fade-up 0.6s 0.9s forwards;
+    }
+    .hero-tag {
+      padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase; border-radius: 2px;
+    }
+    .map-content { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem; }
+    .block-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .block-label-line { width: 30px; height: 1px; background: #dc8c1e; }
+    .block-label-text { font-size: 0.65rem; letter-spacing: 4px; color: #dc8c1e; text-transform: uppercase; }
+    .block-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); margin-bottom: 2rem; }
+    .map-overview {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      margin-bottom: 5rem; align-items: center;
+    }
+    .map-overview-text { font-size: 0.9rem; color: var(--gray); line-height: 1.9; }
+    .map-overview-text span { color: var(--white); }
+    .map-overview-img {
+      width: 100%; border: 1px solid var(--border); border-radius: 2px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+    .info-banner {
+      background: var(--black2); border: 1px solid rgba(220,140,30,0.3);
+      border-left: 3px solid #dc8c1e; border-radius: 2px;
+      padding: 1.2rem 1.5rem; margin-bottom: 2rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .info-icon { font-size: 1.5rem; line-height: 1; }
+    .info-title { font-size: 0.7rem; letter-spacing: 3px; color: #dc8c1e; text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem; }
+    .info-desc { font-size: 0.8rem; color: var(--gray); line-height: 1.6; }
+    .info-desc span { color: var(--white); }
+    .minimap-section { margin-bottom: 5rem; }
+    .minimap-wrap {
+      width: 100%; border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      background: var(--black2);
+    }
+    .minimap-wrap img { width: 100%; display: block; }
+    .callouts-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 5rem;
+    }
+    .callout-section {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .callout-section-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    }
+    .callout-section-title.site-a { color: var(--red); border-color: rgba(255,70,85,0.2); }
+    .callout-section-title.site-b { color: #50a0c8; border-color: rgba(80,160,200,0.2); }
+    .callout-section-title.mid { color: #dc8c1e; border-color: rgba(220,140,30,0.2); }
+    .callout-list { list-style: none; padding: 0; margin: 0; }
+    .callout-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.75rem;
+    }
+    .callout-list li:last-child { border-bottom: none; }
+    .callout-name { color: var(--white); font-weight: 600; letter-spacing: 1px; }
+    .callout-alt { color: var(--gray); font-size: 0.65rem; }
+    .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 5rem; }
+    .stat-box {
+      flex: 1; min-width: 140px; background: var(--black2);
+      border: 1px solid var(--border); border-radius: 2px; padding: 1.2rem; text-align: center;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-box-num { font-size: 2rem; font-weight: 900; color: #dc8c1e; line-height: 1; }
+    .stat-box-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-top: 0.3rem; }
+    .tier-section { margin-bottom: 5rem; }
+    .tier-grid { display: flex; flex-direction: column; gap: 0.5rem; }
+    .tier-row {
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 0.6rem 1rem;
+    }
+    .tier-label {
+      width: 28px; height: 28px; border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 900; flex-shrink: 0;
+    }
+    .tier-s { background: rgba(255,70,85,0.15); color: var(--red); border: 1px solid rgba(255,70,85,0.3); }
+    .tier-a { background: rgba(255,150,0,0.12); color: #ff9600; border: 1px solid rgba(255,150,0,0.3); }
+    .tier-b { background: rgba(80,200,100,0.1); color: #50c864; border: 1px solid rgba(80,200,100,0.25); }
+    .tier-c { background: rgba(120,120,180,0.1); color: #8888cc; border: 1px solid rgba(120,120,180,0.25); }
+    .tier-agents { font-size: 0.75rem; color: var(--gray); }
+    .tier-agents span { color: var(--white); }
+    .comp-section { margin-bottom: 5rem; }
+    .comp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .comp-card {
+      background: var(--black2); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .comp-card-title { font-size: 0.7rem; letter-spacing: 3px; color: #dc8c1e; text-transform: uppercase; margin-bottom: 1rem; }
+    .comp-agents { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .comp-agent { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .comp-agent img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
+    .comp-agent span { font-size: 0.55rem; letter-spacing: 1px; color: var(--gray); text-transform: uppercase; }
+    .comp-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.6; }
+    .maps-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 3rem; border-top: 1px solid var(--border);
+    }
+    .map-nav-btn {
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--gray);
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .map-nav-btn:hover { color: #dc8c1e; }
+    .map-nav-btn img { width: 64px; height: 36px; object-fit: cover; border-radius: 2px; border: 1px solid var(--border); }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 768px) {
+      .map-hero { padding: 7rem 1.5rem 3rem; }
+      .map-content { padding: 3rem 1.5rem; }
+      .map-overview { grid-template-columns: 1fr; }
+      .callouts-grid { grid-template-columns: 1fr; }
+      .comp-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Hub</a></li>
+    <li><a href="../agentes.html">Agentes</a></li>
+    <li><a href="../mapas.html" class="active">Mapas</a></li>
+  </ul>
+</nav>
+
+<section class="map-hero">
+  <img class="map-hero-img" src="https://i.imgur.com/wBJIyVf.jpeg" alt="Sunset"/>
+  <div class="map-hero-overlay"></div>
+  <div class="map-hero-grid"></div>
+  <div class="map-hero-content">
+    <a href="../mapas.html" class="map-back">← Voltar para Mapas</a>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <div class="map-pool-badge">⚫ Fora do Pool</div>
+      <div class="la-badge">🌆 Los Angeles</div>
+    </div>
+    <h1 class="map-hero-name">
+      Sunset
+      <span>LOS ANGELES 🇺🇸</span>
+    </h1>
+    <p class="map-hero-location">📍 Los Angeles, EUA · 2 Sites · Porta Mecânica</p>
+    <div class="map-hero-tags">
+      <span class="hero-tag">Mechanical Door</span>
+      <span class="hero-tag">3 Lanes</span>
+      <span class="hero-tag">Mid Courtyard</span>
+      <span class="hero-tag">B Market</span>
+    </div>
+  </div>
+</section>
+
+<div class="map-content">
+
+  <div class="reveal" style="margin-bottom:5rem;">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Overview</span>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-icon">🚪</div>
+      <div>
+        <div class="info-title">Porta Mecânica — B Market → Mid</div>
+        <p class="info-desc">
+          A mecânica especial do Sunset é uma <span>porta metálica</span> entre
+          <span>B Market e Mid Courtyard</span> — controlada por um switch
+          do lado do Market. Qualquer time pode abrir ou fechar.
+          A porta tem <span>500 HP</span> e pode ser destruída.
+          Fechada, bloqueia completamente a passagem; destruída,
+          abre um <span>ângulo novo permanente</span> para o resto do round.
+        </p>
+      </div>
+    </div>
+
+    <div class="map-overview">
+      <div>
+        <h2 class="block-title">Sobre o Mapa</h2>
+        <p class="map-overview-text">
+          <span>Sunset</span> é ambientado em <span>Los Angeles</span>,
+          no bairro de Koreatown — com food trucks, murais urbanos
+          e a estética vibrante da Califórnia ao entardecer.
+          É o <span>10º mapa lançado no VALORANT</span> e tem
+          design clássico de <span>3 lanes</span> com mid aberto,
+          lembrando Ascent mas com mais corredores apertados.
+          A defesa tem vantagem clara: <span>64.9% win rate para DEF</span>
+          contra apenas 33.3% para ATK — um dos maiores desequilíbrios
+          do roster, o que exige execuções muito coordenadas no ataque.
+          Mid Courtyard é o coração do mapa —
+          <span>quem controla o mid dita o side</span>.
+        </p>
+      </div>
+      <img class="map-overview-img"
+        src="https://i.imgur.com/wBJIyVf.jpeg"
+        alt="Sunset Overview"/>
+    </div>
+  </div>
+
+  <div class="minimap-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Minimap</span>
+    </div>
+    <h2 class="block-title">Mapa 2D</h2>
+    <div class="minimap-wrap">
+      <img src="https://i.imgur.com/AFdveNB.png" alt="Sunset Minimap"/>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Callouts</span>
+    </div>
+    <h2 class="block-title">Nomes dos Locais</h2>
+    <div class="callouts-grid">
+
+      <div class="callout-section">
+        <div class="callout-section-title site-a">⚔️ Site A</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">A Main</span><span class="callout-alt">Entrada A</span></li>
+          <li><span class="callout-name">A Lobby</span><span class="callout-alt">Área ATK → A</span></li>
+          <li><span class="callout-name">A Elbow</span><span class="callout-alt">Cotovelo A</span></li>
+          <li><span class="callout-name">A Link</span><span class="callout-alt">Mid → A</span></li>
+          <li><span class="callout-name">A Alley</span><span class="callout-alt">Beco A</span></li>
+          <li><span class="callout-name">A Cubby</span><span class="callout-alt">Cantinho A</span></li>
+          <li><span class="callout-name">A Default</span><span class="callout-alt">Plant A</span></li>
+          <li><span class="callout-name">A Tower</span><span class="callout-alt">Torre A</span></li>
+        </ul>
+      </div>
+
+      <div class="callout-section">
+        <div class="callout-section-title site-b">🛡️ Site B</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">B Main</span><span class="callout-alt">Entrada B</span></li>
+          <li><span class="callout-name">B Market</span><span class="callout-alt">Mercado B</span></li>
+          <li><span class="callout-name">B Boba</span><span class="callout-alt">Loja Boba B</span></li>
+          <li><span class="callout-name">B Generator</span><span class="callout-alt">Gerador B</span></li>
+          <li><span class="callout-name">B Alley</span><span class="callout-alt">Beco B</span></li>
+          <li><span class="callout-name">B Default</span><span class="callout-alt">Plant B</span></li>
+          <li><span class="callout-name">B Screen</span><span class="callout-alt">Tela B</span></li>
+          <li><span class="callout-name">CT</span><span class="callout-alt">Saída CT</span></li>
+        </ul>
+      </div>
+
+      <div class="callout-section">
+        <div class="callout-section-title mid">🗺️ Mid / Geral</div>
+        <ul class="callout-list">
+          <li><span class="callout-name">Mid Courtyard</span><span class="callout-alt">Pátio Central</span></li>
+          <li><span class="callout-name">Mid Top</span><span class="callout-alt">Topo Mid DEF</span></li>
+          <li><span class="callout-name">Mid Shops</span><span class="callout-alt">Lojas Mid</span></li>
+          <li><span class="callout-name">Mechanical Door</span><span class="callout-alt">Porta B↔Mid</span></li>
+          <li><span class="callout-name">Switch</span><span class="callout-alt">Botão da Porta</span></li>
+          <li><span class="callout-name">Mid Cubby</span><span class="callout-alt">Cantinho Mid</span></li>
+          <li><span class="callout-name">Attacker Spawn</span><span class="callout-alt">Spawn ATK</span></li>
+          <li><span class="callout-name">Defender Spawn</span><span class="callout-alt">Spawn DEF</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Data</span>
+    </div>
+    <h2 class="block-title">Stats do Mapa</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-box-num">33.3%</div><div class="stat-box-label">Win Rate Ataque</div></div>
+      <div class="stat-box"><div class="stat-box-num">64.9%</div><div class="stat-box-label">Win Rate Defesa</div></div>
+      <div class="stat-box"><div class="stat-box-num">500</div><div class="stat-box-label">HP da Porta</div></div>
+      <div class="stat-box"><div class="stat-box-num">21.6</div><div class="stat-box-label">Média de Rounds</div></div>
+    </div>
+  </div>
+
+  <div class="tier-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Tier List</span>
+    </div>
+    <h2 class="block-title">Agentes por Tier</h2>
+    <div class="tier-grid">
+      <div class="tier-row">
+        <div class="tier-label tier-s">S</div>
+        <div class="tier-agents"><span>Brimstone</span> · <span>Sova</span> · <span>Cypher</span> · <span>Iso</span> · <span>Omen</span></div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-label tier-a">A</div>
+        <div class="tier-agents"><span>Deadlock</span> · <span>KAY/O</span> · <span>Fade</span> · <span>Jett</span> · <span>Raze</span> · <span>Skye</span></div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-label tier-b">B</div>
+        <div class="tier-agents"><span>Reyna</span> · <span>Clove</span> · <span>Gekko</span> · <span>Chamber</span> · <span>Neon</span></div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-label tier-c">C</div>
+        <div class="tier-agents">Harbor · Viper — evitar neste mapa</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comp-section reveal">
+    <div class="block-label">
+      <div class="block-label-line"></div>
+      <span class="block-label-text">// Meta</span>
+    </div>
+    <h2 class="block-title">Melhores Composições</h2>
+    <div class="comp-grid">
+
+      <div class="comp-card">
+        <div class="comp-card-title">// Comp Meta — Execute + Lock</div>
+        <div class="comp-agents">
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/9f0d8ba9-4140-b941-57d3-a7ad57c6b417/displayiconsmall.png"/>
+            <span>Brimstone</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/117ed9e3-49f3-6512-3ccf-0cada7e3823b/displayiconsmall.png"/>
+            <span>Cypher</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/cc8b64c8-4b25-4ff9-6e7f-37b4da43d235/displayiconsmall.png"/>
+            <span>Deadlock</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/f94c3b30-42be-e959-889c-5aa313dba261/displayiconsmall.png"/>
+            <span>Raze</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/9f8d5680-484d-7b10-37c8-7b5a7e9c2d4e/displayiconsmall.png"/>
+            <span>Gekko</span>
+          </div>
+        </div>
+        <p class="comp-desc">Brimstone smoke rápido para execuções em A e B, Cypher com trips na porta mecânica e B Boba, Deadlock bloqueia flancos via A Alley, Raze domina Mid Courtyard com Boom Bot + satchel e Gekko abre sites com Wingman e Mosh Pit.</p>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-card-title">// Comp Pro Play — Mid Control</div>
+        <div class="comp-agents">
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/8e253930-4c05-31dd-1b6c-968525494517/displayiconsmall.png"/>
+            <span>Omen</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/320b2a48-4d9b-a075-30f1-1f93a9b638fa/displayiconsmall.png"/>
+            <span>Sova</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/117ed9e3-49f3-6512-3ccf-0cada7e3823b/displayiconsmall.png"/>
+            <span>Cypher</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/0e4efd5b-4337-e727-cae6-538a5a7dc078/displayiconsmall.png"/>
+            <span>Iso</span>
+          </div>
+          <div class="comp-agent">
+            <img src="https://media.valorant-api.com/agents/6f2a04ca-43e0-be17-7f36-b3908627744d/displayiconsmall.png"/>
+            <span>Skye</span>
+          </div>
+        </div>
+        <p class="comp-desc">Omen S-tier com smokes versáteis e teleporte surpresa pela porta mecânica, Sova recon em ambos os sites, Cypher trava flancos, Iso duela agressivamente no Mid Courtyard e Skye abre informação com Seekers e flashes nas entradas.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="maps-nav reveal">
+    <a href="lotus.html" class="map-nav-btn">
+      <img src="https://media.valorant-api.com/maps/2fe4ed3a-450a-948b-6d6b-e89a78e680a9/splash.png" alt="Lotus"/>
+      ← Lotus
+    </a>
+    <a href="../mapas.html" class="btn btn-red" style="font-size:0.75rem;">Ver Todos</a>
+    <a href="abyss.html" class="map-nav-btn">
+      Abyss →
+      <img src="https://media.valorant-api.com/maps/224b0a95-48b9-f703-1bd8-67aca101a61f/splash.png" alt="Abyss"/>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>

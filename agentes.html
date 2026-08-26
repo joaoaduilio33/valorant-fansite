@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VALORANT — Agentes</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .agents-hero {
+      padding: 8rem 3rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .agents-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255,70,85,0.07), transparent 70%),
+                  linear-gradient(180deg, #1a0a0c, #0f0f0f);
+    }
+    .agents-hero-content { position: relative; z-index: 1; }
+    .agents-hero h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: 3px; color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .agents-hero h1 span { color: var(--red); }
+    .agents-hero-sub {
+      font-size: 0.8rem; color: var(--gray);
+      letter-spacing: 2px; margin-bottom: 2.5rem;
+    }
+
+    /* SEARCH + FILTER */
+    .controls {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      align-items: center; margin-bottom: 3rem;
+    }
+    .search-wrap {
+      position: relative; flex: 1; min-width: 220px; max-width: 360px;
+    }
+    .search-wrap input {
+      width: 100%;
+      background: var(--black2);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      outline: none;
+      border-radius: 2px;
+      transition: border-color 0.3s;
+    }
+    .search-wrap input:focus { border-color: var(--red); }
+    .search-wrap input::placeholder { color: var(--gray); }
+    .search-icon {
+      position: absolute; left: 0.8rem; top: 50%;
+      transform: translateY(-50%); color: var(--gray); font-size: 0.9rem;
+    }
+
+    .filter-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 0.6rem 1.2rem;
+      background: var(--black2);
+      border: 1px solid var(--border);
+      color: var(--gray);
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer;
+      border-radius: 2px; transition: all 0.3s;
+    }
+    .filter-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+    .filter-btn.active { color: var(--white); }
+    .filter-btn[data-role="todos"].active    { border-color: var(--white); background: rgba(255,255,255,0.05); }
+    .filter-btn[data-role="duelista"].active  { border-color: var(--red); color: var(--red); background: rgba(255,70,85,0.08); }
+    .filter-btn[data-role="controlador"].active { border-color: var(--purple-light); color: var(--purple-light); background: rgba(168,85,247,0.08); }
+    .filter-btn[data-role="iniciador"].active { border-color: #eab308; color: #eab308; background: rgba(234,179,8,0.08); }
+    .filter-btn[data-role="sentinela"].active { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.08); }
+
+    /* COUNTER */
+    .agents-counter {
+      font-size: 0.7rem; color: var(--gray);
+      letter-spacing: 2px; margin-bottom: 1.5rem;
+    }
+    .agents-counter span { color: var(--red); }
+
+    /* AGENTS GRID */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .agent-card {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--border); border-radius: 2px;
+      background: var(--black2); text-decoration: none;
+      display: block; transition: all 0.3s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      opacity: 0; transform: translateY(20px);
+      animation: card-in 0.5s forwards;
+    }
+    @keyframes card-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .agent-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(255,70,85,0.15);
+    }
+    .agent-card.hidden { display: none; }
+
+    .agent-card-img-wrap {
+      width: 100%; height: 220px;
+      overflow: hidden; position: relative;
+    }
+    .agent-card-img-wrap::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 60%;
+      background: linear-gradient(transparent, var(--black2));
+    }
+    .agent-card img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top;
+      transition: transform 0.4s;
+      background: #1a1a2e;
+    }
+    .agent-card:hover img { transform: scale(1.06); }
+
+    .agent-card-info {
+      padding: 0.8rem 1rem 1rem;
+      position: relative;
+    }
+    .agent-role-tag {
+      font-size: 0.58rem; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 0.3rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .agent-role-tag.duelista  { color: var(--red); }
+    .agent-role-tag.controlador { color: var(--purple-light); }
+    .agent-role-tag.iniciador { color: #eab308; }
+    .agent-role-tag.sentinela { color: #3b82f6; }
+
+    .agent-name {
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 2px; color: var(--white);
+      text-transform: uppercase;
+    }
+    .agent-origin {
+      font-size: 0.65rem; color: var(--gray);
+      letter-spacing: 1px; margin-top: 0.2rem;
+    }
+
+    .agent-card-hover-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red), var(--purple));
+      transform: scaleX(0); transition: transform 0.3s;
+      transform-origin: left;
+    }
+    .agent-card:hover .agent-card-hover-bar { transform: scaleX(1); }
+
+    /* ROLE COLORS NA BORDA */
+    .agent-card.duelista:hover   { border-color: var(--red); }
+    .agent-card.controlador:hover { border-color: var(--purple-light); }
+    .agent-card.iniciador:hover  { border-color: #eab308; }
+    .agent-card.sentinela:hover  { border-color: #3b82f6; }
+
+    /* NO RESULTS */
+    .no-results {
+      grid-column: 1/-1; text-align: center;
+      padding: 4rem; color: var(--gray);
+      font-size: 0.8rem; letter-spacing: 2px;
+      border: 1px dashed var(--border); border-radius: 2px;
+      display: none;
+    }
+    .no-results.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">◆</div>
+    <span class="nav-logo-text">VALO<span>RANT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Hub</a></li>
+    <li><a href="agentes.html" class="active">Agentes</a></li>
+    <li><a href="mapas.html">Mapas</a></li>
+  </ul>
+</nav>
+
+<div class="agents-hero">
+  <div class="agents-hero-bg"></div>
+  <div class="section-wrap agents-hero-content" style="padding-top:0;padding-bottom:0;">
+    <div class="section-label">
+      <div class="section-label-line"></div>
+      <span class="section-label-text">// 001 — Roster</span>
+    </div>
+    <h1>Agentes <span>VALORANT</span></h1>
+    <p class="agents-hero-sub">29 agentes — 4 funções — escolha o seu estilo de jogo</p>
+
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="BUSCAR AGENTE..."/>
+      </div>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-role="todos">Todos</button>
+        <button class="filter-btn" data-role="duelista">⚔ Duelista</button>
+        <button class="filter-btn" data-role="controlador">🌀 Controlador</button>
+        <button class="filter-btn" data-role="iniciador">💥 Iniciador</button>
+        <button class="filter-btn" data-role="sentinela">🛡 Sentinela</button>
+      </div>
+    </div>
+
+    <p class="agents-counter">Mostrando <span id="count">29</span> agentes</p>
+
+    <div class="agents-grid" id="grid">
+
+      <!-- DUELISTAS -->
+      <a href="agentes/jett.html" class="agent-card duelista" data-role="duelista" data-name="jett">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/add6443a-41bd-e414-f6ad-e58d267f4e95/displayicon.png" alt="Jett"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Jett</div>
+          <div class="agent-origin">Coreia do Sul</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/raze.html" class="agent-card duelista" data-role="duelista" data-name="raze">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/f94c3b30-42be-e959-889c-5aa313dba261/displayicon.png" alt="Raze"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Raze</div>
+          <div class="agent-origin">Brasil</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/phoenix.html" class="agent-card duelista" data-role="duelista" data-name="phoenix">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/2CEbnCw.png" alt="Phoenix"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Phoenix</div>
+          <div class="agent-origin">Reino Unido</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/reyna.html" class="agent-card duelista" data-role="duelista" data-name="reyna">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/a3bfb853-43b2-7238-a4f1-ad90e9e46bcc/displayicon.png" alt="Reyna"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Reyna</div>
+          <div class="agent-origin">México</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/yoru.html" class="agent-card duelista" data-role="duelista" data-name="yoru">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/7f94d92c-4234-0a36-9646-3a87eb8b5c89/displayicon.png" alt="Yoru"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Yoru</div>
+          <div class="agent-origin">Japão</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/neon.html" class="agent-card duelista" data-role="duelista" data-name="neon">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/bb2a4828-46eb-8cd1-e765-15848195d751/displayicon.png" alt="Neon"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Neon</div>
+          <div class="agent-origin">Filipinas</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/iso.html" class="agent-card duelista" data-role="duelista" data-name="iso">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/0e38b510-41a8-5780-5e8f-568b2a4f2d6c/displayicon.png" alt="Iso"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Iso</div>
+          <div class="agent-origin">China</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/waylay.html" class="agent-card duelista" data-role="duelista" data-name="waylay">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/d2oyAAG.png" alt="Waylay"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag duelista">⚔ Duelista</div>
+          <div class="agent-name">Waylay</div>
+          <div class="agent-origin">Desconhecida</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <!-- CONTROLADORES -->
+      <a href="agentes/brimstone.html" class="agent-card controlador" data-role="controlador" data-name="brimstone">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/riT0TlL.png" alt="Brimstone"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag controlador">🌀 Controlador</div>
+          <div class="agent-name">Brimstone</div>
+          <div class="agent-origin">EUA</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/viper.html" class="agent-card controlador" data-role="controlador" data-name="viper">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/707eab51-4836-f488-046a-cda6bf494859/displayicon.png" alt="Viper"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag controlador">🌀 Controlador</div>
+          <div class="agent-name">Viper</div>
+          <div class="agent-origin">EUA</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/omen.html" class="agent-card controlador" data-role="controlador" data-name="omen">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/8e253930-4c05-31dd-1b6c-968525494517/displayicon.png" alt="Omen"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag controlador">🌀 Controlador</div>
+          <div class="agent-name">Omen</div>
+          <div class="agent-origin">Desconhecida</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/astra.html" class="agent-card controlador" data-role="controlador" data-name="astra">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/41fb69c1-4189-7b37-f117-bcaf1e96f1bf/displayicon.png" alt="Astra"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag controlador">🌀 Controlador</div>
+          <div class="agent-name">Astra</div>
+          <div class="agent-origin">Gana</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/harbor.html" class="agent-card controlador" data-role="controlador" data-name="harbor">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/95b78ed7-4637-86d9-7e41-71ba8c293152/displayicon.png" alt="Harbor"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag controlador">🌀 Controlador</div>
+          <div class="agent-name">Harbor</div>
+          <div class="agent-origin">Índia</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/clove.html" class="agent-card controlador" data-role="controlador" data-name="clove">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/0sQ8buY.png" alt="Clove"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag controlador">🌀 Controlador</div>
+          <div class="agent-name">Clove</div>
+          <div class="agent-origin">Escócia</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <!-- INICIADORES -->
+      <a href="agentes/sova.html" class="agent-card iniciador" data-role="iniciador" data-name="sova">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/320b2a48-4d9b-a075-30f1-1f93a9b638fa/displayicon.png" alt="Sova"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">Sova</div>
+          <div class="agent-origin">Rússia</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/breach.html" class="agent-card iniciador" data-role="iniciador" data-name="breach">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/V4RVWZw.png" alt="Breach"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">Breach</div>
+          <div class="agent-origin">Suécia</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/skye.html" class="agent-card iniciador" data-role="iniciador" data-name="skye">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/6f2a04ca-43e0-be17-7f36-b3908627744d/displayicon.png" alt="Skye"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">Skye</div>
+          <div class="agent-origin">Austrália</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/kayo.html" class="agent-card iniciador" data-role="iniciador" data-name="kayo">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/601dbbe7-43ce-be57-2a40-4abd24953621/displayicon.png" alt="KAY/O"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">KAY/O</div>
+          <div class="agent-origin">Futuro</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/fade.html" class="agent-card iniciador" data-role="iniciador" data-name="fade">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/dade69b4-4f5a-8528-247b-219e5a1facd6/displayicon.png" alt="Fade"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">Fade</div>
+          <div class="agent-origin">Turquia</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/gekko.html" class="agent-card iniciador" data-role="iniciador" data-name="gekko">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/e370fa57-4757-3604-3648-499e1f642d3f/displayicon.png" alt="Gekko"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">Gekko</div>
+          <div class="agent-origin">EUA</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/tejo.html" class="agent-card iniciador" data-role="iniciador" data-name="tejo">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/J1EMb5i.png" alt="Tejo"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag iniciador">💥 Iniciador</div>
+          <div class="agent-name">Tejo</div>
+          <div class="agent-origin">Índia</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <!-- SENTINELAS -->
+      <a href="agentes/sage.html" class="agent-card sentinela" data-role="sentinela" data-name="sage">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/569fdd95-4d10-43ab-ca70-79becc718b46/displayicon.png" alt="Sage"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag sentinela">🛡 Sentinela</div>
+          <div class="agent-name">Sage</div>
+          <div class="agent-origin">China</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/cypher.html" class="agent-card sentinela" data-role="sentinela" data-name="cypher">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/117ed9e3-49f3-6512-3ccf-0cada7e3823b/displayicon.png" alt="Cypher"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag sentinela">🛡 Sentinela</div>
+          <div class="agent-name">Cypher</div>
+          <div class="agent-origin">Marrocos</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/killjoy.html" class="agent-card sentinela" data-role="sentinela" data-name="killjoy">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/1e58de9c-4950-5125-93e9-a0aee9f98746/displayicon.png" alt="Killjoy"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag sentinela">🛡 Sentinela</div>
+          <div class="agent-name">Killjoy</div>
+          <div class="agent-origin">Alemanha</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/chamber.html" class="agent-card sentinela" data-role="sentinela" data-name="chamber">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/PP084ns.png" alt="Chamber"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag sentinela">🛡 Sentinela</div>
+          <div class="agent-name">Chamber</div>
+          <div class="agent-origin">França</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/deadlock.html" class="agent-card sentinela" data-role="sentinela" data-name="deadlock">
+        <div class="agent-card-img-wrap">
+          <img src="https://media.valorant-api.com/agents/cc8b64c8-4b25-4ff9-6e7f-37b4da43d235/displayicon.png" alt="Deadlock"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag sentinela">🛡 Sentinela</div>
+          <div class="agent-name">Deadlock</div>
+          <div class="agent-origin">Noruega</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/vyse.html" class="agent-card sentinela" data-role="sentinela" data-name="vyse">
+        <div class="agent-card-img-wrap">
+          <img src="https://i.imgur.com/mulfrhJ.png" alt="Vyse"/>
+        </div>
+        <div class="agent-card-info">
+          <div class="agent-role-tag sentinela">🛡 Sentinela</div>
+          <div class="agent-name">Vyse</div>
+          <div class="agent-origin">Desconhecida</div>
+        </div>
+        <div class="agent-card-hover-bar"></div>
+      </a>
+
+      <a href="agentes/veto.html" class="agent-card sentinela" data-role="sentinela" data-name="veto">
+  <div class="agent-card-img-wrap">
+    <img src="https://i.imgur.com/YgCtNAF.png" alt="Veto"/>
+  </div>
+  <div class="agent-card-info">
+    <div class="agent-role-tag sentinela">⬡ Sentinela</div>
+    <div class="agent-name">Veto</div>
+    <div class="agent-origin">Senegal</div>
+  </div>
+  <div class="agent-card-hover-bar"></div>
+</a>
+
+      <div class="no-results" id="no-results">⚔ Nenhum agente encontrado</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>VALORANT FAN SITE — <span class="c-red">Não oficial</span> — Criado por João Aduílio</p>
+  <p class="footer-sub">VALORANT é propriedade da Riot Games. Este site não é afiliado à Riot Games.</p>
+</footer>
+
+<script>
+  // Filtro + busca
+  const cards = document.querySelectorAll('.agent-card');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const searchInput = document.getElementById('search');
+  const counter = document.getElementById('count');
+  const noResults = document.getElementById('no-results');
+
+  let currentRole = 'todos';
+
+  function filterAgents() {
+    const query = searchInput.value.toLowerCase().trim();
+    let visible = 0;
+
+    cards.forEach((card, i) => {
+      const role = card.dataset.role;
+      const name = card.dataset.name;
+      const matchRole = currentRole === 'todos' || role === currentRole;
+      const matchSearch = name.includes(query);
+
+      if (matchRole && matchSearch) {
+        card.classList.remove('hidden');
+        card.style.animationDelay = (visible * 0.05) + 's';
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    counter.textContent = visible;
+    noResults.classList.toggle('visible', visible === 0);
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentRole = btn.dataset.role;
+      filterAgents();
+    });
+  });
+
+  searchInput.addEventListener('input', filterAgents);
+
+  // Checar query param ?role=
+  const params = new URLSearchParams(window.location.search);
+  const roleParam = params.get('role');
+  if (roleParam) {
+    const btn = document.querySelector(`.filter-btn[data-role="${roleParam}"]`);
+    if (btn) { btn.click(); }
+  }
+
+  // Animação escalonada inicial
+  cards.forEach((card, i) => {
+    card.style.animationDelay = (i * 0.04) + 's';
+  });
+</script>
+
+</body>
+</html>
