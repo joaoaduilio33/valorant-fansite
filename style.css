@@ -191,6 +191,15 @@ footer {
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s, transform 0.8s; }
 .reveal.visible { opacity: 1; transform: none; }
 
+/* Shared accessibility improvements for the original detail pages. */
+html{scroll-padding-top:100px}
+button,a,input{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--white);outline-offset:4px}
+.nav-links a,.filter-btn,.search-wrap input,.agent-nav-btn{font-size:.875rem;min-height:44px}
+footer,.footer-sub{font-size:.75rem;line-height:1.7;opacity:1}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+@media(max-width:540px){nav{flex-wrap:wrap;justify-content:center;gap:.75rem}.nav-links{display:flex!important;flex-wrap:wrap;justify-content:center;gap:1rem!important}.nav-links a{font-size:.75rem;letter-spacing:1px}.nav-logo-text{font-size:1rem}}
+
 @media (max-width: 768px) {
   nav { padding: 1rem 1.5rem; }
   .nav-links { gap: 1.5rem; }

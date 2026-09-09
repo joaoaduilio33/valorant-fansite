@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { sites } from '@openai/sites-vite-plugin';
+import { readdirSync } from 'node:fs';
 
 function staticWorker() {
   return {
@@ -14,4 +15,6 @@ function staticWorker() {
   };
 }
 
-export default defineConfig({ plugins: [staticWorker(), sites()] });
+// Keep the original agent and map URLs available in the production build.
+const pages = ['index.html', 'agentes.html', 'mapas.html', ...['agentes', 'mapas'].flatMap((directory) => readdirSync(directory).filter((name) => name.endsWith('.html')).map((name) => `${directory}/${name}`))];
+export default defineConfig({ plugins: [staticWorker(), sites()], build: { rollupOptions: { input: pages } } });
