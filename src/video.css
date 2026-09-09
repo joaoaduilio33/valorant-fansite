@@ -6,3 +6,7 @@
 .video-actions a,.video-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.65rem .9rem;border:1px solid #ff4655;background:#16181f;color:#f2eee8;font:inherit;font-size:.875rem;text-decoration:none;cursor:pointer}
 .video-actions a:hover,.video-actions button:hover{background:#352027}
 .video-actions :focus-visible{outline:2px solid #f2eee8;outline-offset:3px}
+.video-credits{margin:1rem 0;padding:1rem;border-left:2px solid #ff4655;background:#12141b;color:#b9bdc7;font-size:.875rem;line-height:1.65;overflow-wrap:anywhere}
+.video-credits p{margin:0 0 .5rem}.video-credits p:last-child{margin-bottom:0}
+.video-credits strong{color:#f2eee8}.video-credits a{color:#f2eee8;text-decoration:underline;text-underline-offset:3px}
+.video-credits a:focus-visible{outline:2px solid #f2eee8;outline-offset:3px}

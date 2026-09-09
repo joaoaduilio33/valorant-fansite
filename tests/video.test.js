@@ -4,10 +4,11 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const videos = JSON.parse(fs.readFileSync(new URL('../src/videos.json', import.meta.url)));
-const source = fs.readFileSync(new URL('../src/video.js', import.meta.url), 'utf8').replace("import './video.css';", '').replace('export function', 'function');
+const videoCredits = JSON.parse(fs.readFileSync(new URL('../src/video-credits.json', import.meta.url)));
+const source = fs.readFileSync(new URL('../src/video.js', import.meta.url), 'utf8').replace(/^import .*;$/gm, '').replace('export function', 'function');
 function setup() {
   let click;
-  const context = vm.createContext({ document: { addEventListener(type, callback) { click = callback; } } });
+  const context = vm.createContext({ videoCredits, document: { addEventListener(type, callback) { click = callback; } } });
   vm.runInContext(source, context);
   return { render: context.videoMarkup, click };
 }
