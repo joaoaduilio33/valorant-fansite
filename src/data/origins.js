@@ -33,4 +33,5 @@ export const origins = {
 };
 
 // Resolved from this module so it works in Live Server and in the Vite build.
-export const flagUrl = (code) => new URL(`../flags/${code}.svg`, import.meta.url).href;
+// Quotes are escaped because the URL ends up inside CSS url('…').
+export const flagUrl = (code) => new URL(`../flags/${code}.svg`, import.meta.url).href.replace(/'/g, '%27').replace(/"/g, '%22');
