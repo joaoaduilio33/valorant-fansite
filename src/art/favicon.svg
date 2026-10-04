@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Same red "V" mark as .brand-mark in src/home.css, on a dark tile so it reads in light and dark tabs. -->
+  <rect width="64" height="64" rx="14" fill="#111318"/>
+  <path d="M10 15h10.6l9.2 20.3L42.6 15H54L29.8 50z" fill="#ff4655"/>
+</svg>
