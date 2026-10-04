@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    { "source": "/agentes/:slug.html", "destination": "/agente/:slug/", "permanent": true },
+    { "source": "/agentes.html", "destination": "/#agentes", "permanent": true },
+    { "source": "/mapas/:slug.html", "destination": "/mapa/:slug/", "permanent": true },
+    { "source": "/mapas.html", "destination": "/#mapas", "permanent": true }
+  ]
+}

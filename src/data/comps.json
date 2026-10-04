@@ -1,0 +1,939 @@
+{
+  "updated": "2026-10-03",
+  "source": "vlr.gg",
+  "events": [
+    {
+      "name": "VALORANT Champions 2026",
+      "url": "https://www.vlr.gg/event/2766/valorant-champions-2026"
+    },
+    {
+      "name": "VCT 2026: Americas Stage 2",
+      "url": "https://www.vlr.gg/event/2977/vct-2026-americas-stage-2"
+    },
+    {
+      "name": "VCT 2026: Pacific Stage 2",
+      "url": "https://www.vlr.gg/event/2776/vct-2026-pacific-stage-2"
+    },
+    {
+      "name": "VCT 2026: EMEA Stage 2",
+      "url": "https://www.vlr.gg/event/2976/vct-2026-emea-stage-2"
+    }
+  ],
+  "maps": {
+    "Summit": {
+      "played": 122,
+      "agents": [
+        {
+          "agent": "Neon",
+          "picks": 83
+        },
+        {
+          "agent": "Fade",
+          "picks": 76
+        },
+        {
+          "agent": "Omen",
+          "picks": 69
+        },
+        {
+          "agent": "Chamber",
+          "picks": 43
+        },
+        {
+          "agent": "Cypher",
+          "picks": 43
+        },
+        {
+          "agent": "Viper",
+          "picks": 36
+        },
+        {
+          "agent": "Sova",
+          "picks": 34
+        },
+        {
+          "agent": "Sage",
+          "picks": 28
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Chamber",
+            "Fade",
+            "Neon",
+            "Omen",
+            "Sage"
+          ],
+          "games": 14,
+          "wins": 9,
+          "teams": [
+            "ENVY",
+            "Gen.G",
+            "LOUD",
+            "T1"
+          ]
+        },
+        {
+          "agents": [
+            "Brimstone",
+            "Cypher",
+            "Kayo",
+            "Neon",
+            "Sova"
+          ],
+          "games": 7,
+          "wins": 6,
+          "teams": [
+            "GIANTX",
+            "NRG",
+            "Team Secret"
+          ]
+        },
+        {
+          "agents": [
+            "Chamber",
+            "Fade",
+            "Neon",
+            "Omen",
+            "Viper"
+          ],
+          "games": 6,
+          "wins": 2,
+          "teams": [
+            "Fire Flux Esports",
+            "Karmine Corp"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Fade",
+            "Harbor",
+            "Neon",
+            "Phoenix"
+          ],
+          "games": 5,
+          "wins": 3,
+          "teams": [
+            "100 Thieves",
+            "FURIA",
+            "FUT Esports"
+          ]
+        }
+      ]
+    },
+    "Ascent": {
+      "played": 142,
+      "agents": [
+        {
+          "agent": "Sova",
+          "picks": 142
+        },
+        {
+          "agent": "Omen",
+          "picks": 137
+        },
+        {
+          "agent": "Cypher",
+          "picks": 96
+        },
+        {
+          "agent": "Phoenix",
+          "picks": 69
+        },
+        {
+          "agent": "Jett",
+          "picks": 68
+        },
+        {
+          "agent": "Neon",
+          "picks": 56
+        },
+        {
+          "agent": "Yoru",
+          "picks": 34
+        },
+        {
+          "agent": "Chamber",
+          "picks": 27
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Cypher",
+            "Jett",
+            "Omen",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 33,
+          "wins": 17,
+          "teams": [
+            "100 Thieves",
+            "2Game Esports",
+            "Eintracht Frankfurt",
+            "FUT Esports",
+            "GIANTX",
+            "Gentle Mates",
+            "KIWOOM DRX",
+            "KRÜ Esports",
+            "NRG",
+            "Nongshim RedForce",
+            "QT DIG∞",
+            "Team Heretics",
+            "Team Liquid"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Neon",
+            "Omen",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 16,
+          "wins": 7,
+          "teams": [
+            "Eternal Fire",
+            "FNATIC",
+            "FUT Esports",
+            "Karmine Corp",
+            "Natus Vincere",
+            "ONSIDE GAMING",
+            "Sentinels",
+            "Team Secret"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Jett",
+            "Neon",
+            "Omen",
+            "Sova"
+          ],
+          "games": 10,
+          "wins": 5,
+          "teams": [
+            "DetonatioN FocusMe",
+            "MIBR",
+            "Nongshim RedForce"
+          ]
+        },
+        {
+          "agents": [
+            "Chamber",
+            "Neon",
+            "Omen",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 9,
+          "wins": 5,
+          "teams": [
+            "ENVY",
+            "Gen.G",
+            "LOUD"
+          ]
+        }
+      ]
+    },
+    "Split": {
+      "played": 136,
+      "agents": [
+        {
+          "agent": "Viper",
+          "picks": 118
+        },
+        {
+          "agent": "Omen",
+          "picks": 117
+        },
+        {
+          "agent": "Neon",
+          "picks": 90
+        },
+        {
+          "agent": "Fade",
+          "picks": 86
+        },
+        {
+          "agent": "Raze",
+          "picks": 62
+        },
+        {
+          "agent": "Skye",
+          "picks": 50
+        },
+        {
+          "agent": "Phoenix",
+          "picks": 40
+        },
+        {
+          "agent": "Astra",
+          "picks": 23
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Fade",
+            "Neon",
+            "Omen",
+            "Phoenix",
+            "Viper"
+          ],
+          "games": 39,
+          "wins": 20,
+          "teams": [
+            "100 Thieves",
+            "2Game Esports",
+            "DetonatioN FocusMe",
+            "ENVY",
+            "Enterprise Esports",
+            "Eternal Fire",
+            "Evil Geniuses",
+            "FNATIC",
+            "FURIA",
+            "GIANTX",
+            "Gentle Mates",
+            "KRÜ Esports",
+            "LEVIATÁN",
+            "Natus Vincere",
+            "Nongshim RedForce",
+            "PCIFIC Esports",
+            "Sentinels",
+            "Team Vitality"
+          ]
+        },
+        {
+          "agents": [
+            "Neon",
+            "Omen",
+            "Raze",
+            "Skye",
+            "Viper"
+          ],
+          "games": 10,
+          "wins": 5,
+          "teams": [
+            "FUT Esports",
+            "Joblife",
+            "QT DIG∞",
+            "Xipto Esports"
+          ]
+        },
+        {
+          "agents": [
+            "Jett",
+            "Omen",
+            "Raze",
+            "Skye",
+            "Viper"
+          ],
+          "games": 10,
+          "wins": 4,
+          "teams": [
+            "2Game Esports",
+            "DetonatioN FocusMe",
+            "FURIA",
+            "FUT Esports",
+            "MIBR",
+            "T1",
+            "TYLOO",
+            "Team Liquid"
+          ]
+        },
+        {
+          "agents": [
+            "Astra",
+            "Fade",
+            "Neon",
+            "Raze",
+            "Vyse"
+          ],
+          "games": 9,
+          "wins": 5,
+          "teams": [
+            "BBL Esports",
+            "Eintracht Frankfurt",
+            "Gen.G",
+            "Joblife"
+          ]
+        }
+      ]
+    },
+    "Lotus": {
+      "played": 140,
+      "agents": [
+        {
+          "agent": "Omen",
+          "picks": 137
+        },
+        {
+          "agent": "Fade",
+          "picks": 106
+        },
+        {
+          "agent": "Raze",
+          "picks": 96
+        },
+        {
+          "agent": "Viper",
+          "picks": 83
+        },
+        {
+          "agent": "Neon",
+          "picks": 66
+        },
+        {
+          "agent": "Vyse",
+          "picks": 62
+        },
+        {
+          "agent": "Chamber",
+          "picks": 40
+        },
+        {
+          "agent": "Skye",
+          "picks": 31
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Fade",
+            "Omen",
+            "Raze",
+            "Viper",
+            "Vyse"
+          ],
+          "games": 28,
+          "wins": 12,
+          "teams": [
+            "Cloud9",
+            "Eintracht Frankfurt",
+            "FNATIC",
+            "Fire Flux Esports",
+            "LOUD",
+            "MIBR",
+            "NRG",
+            "Sentinels",
+            "Team Heretics",
+            "Team Vitality",
+            "VARREL"
+          ]
+        },
+        {
+          "agents": [
+            "Chamber",
+            "Fade",
+            "Neon",
+            "Omen",
+            "Viper"
+          ],
+          "games": 24,
+          "wins": 17,
+          "teams": [
+            "EDward Gaming",
+            "ENVY",
+            "KRÜ Esports",
+            "Karmine Corp",
+            "LOUD",
+            "Nongshim RedForce",
+            "T1",
+            "TYLOO"
+          ]
+        },
+        {
+          "agents": [
+            "Neon",
+            "Omen",
+            "Raze",
+            "Skye",
+            "Vyse"
+          ],
+          "games": 9,
+          "wins": 3,
+          "teams": [
+            "Enterprise Esports",
+            "FUT Esports",
+            "Nongshim RedForce"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Fade",
+            "Neon",
+            "Omen",
+            "Raze"
+          ],
+          "games": 8,
+          "wins": 4,
+          "teams": [
+            "Eternal Fire",
+            "Gentle Mates",
+            "Joblife",
+            "QT DIG∞"
+          ]
+        }
+      ]
+    },
+    "Abyss": {
+      "played": 44,
+      "agents": [
+        {
+          "agent": "Sova",
+          "picks": 44
+        },
+        {
+          "agent": "Waylay",
+          "picks": 29
+        },
+        {
+          "agent": "Yoru",
+          "picks": 27
+        },
+        {
+          "agent": "Omen",
+          "picks": 22
+        },
+        {
+          "agent": "Harbor",
+          "picks": 22
+        },
+        {
+          "agent": "Astra",
+          "picks": 22
+        },
+        {
+          "agent": "Jett",
+          "picks": 12
+        },
+        {
+          "agent": "Phoenix",
+          "picks": 10
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Cypher",
+            "Omen",
+            "Sova",
+            "Waylay",
+            "Yoru"
+          ],
+          "games": 7,
+          "wins": 3,
+          "teams": [
+            "BBL Esports",
+            "KIWOOM DRX",
+            "Karmine Corp",
+            "Nongshim RedForce"
+          ]
+        },
+        {
+          "agents": [
+            "Harbor",
+            "Omen",
+            "Sova",
+            "Waylay",
+            "Yoru"
+          ],
+          "games": 5,
+          "wins": 5,
+          "teams": [
+            "JD Gaming",
+            "LOUD",
+            "Paper Rex"
+          ]
+        },
+        {
+          "agents": [
+            "Astra",
+            "Harbor",
+            "Neon",
+            "Sova",
+            "Waylay"
+          ],
+          "games": 4,
+          "wins": 3,
+          "teams": [
+            "G2 Esports"
+          ]
+        },
+        {
+          "agents": [
+            "Astra",
+            "Omen",
+            "Sova",
+            "Waylay",
+            "Yoru"
+          ],
+          "games": 4,
+          "wins": 2,
+          "teams": [
+            "Global Esports"
+          ]
+        }
+      ]
+    },
+    "Haven": {
+      "played": 150,
+      "agents": [
+        {
+          "agent": "Omen",
+          "picks": 126
+        },
+        {
+          "agent": "Neon",
+          "picks": 126
+        },
+        {
+          "agent": "Sova",
+          "picks": 126
+        },
+        {
+          "agent": "Phoenix",
+          "picks": 93
+        },
+        {
+          "agent": "Cypher",
+          "picks": 87
+        },
+        {
+          "agent": "Chamber",
+          "picks": 43
+        },
+        {
+          "agent": "Yoru",
+          "picks": 30
+        },
+        {
+          "agent": "Astra",
+          "picks": 23
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Cypher",
+            "Neon",
+            "Omen",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 46,
+          "wins": 25,
+          "teams": [
+            "100 Thieves",
+            "BBL Esports",
+            "Enterprise Esports",
+            "Evil Geniuses",
+            "FNATIC",
+            "G2 Esports",
+            "GIANTX",
+            "Gentle Mates",
+            "KIWOOM DRX",
+            "KRÜ Esports",
+            "Karmine Corp",
+            "MIBR",
+            "Natus Vincere",
+            "Nongshim RedForce",
+            "Rex Regum Qeon",
+            "Sentinels",
+            "Team Secret",
+            "VARREL"
+          ]
+        },
+        {
+          "agents": [
+            "Chamber",
+            "Neon",
+            "Omen",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 13,
+          "wins": 9,
+          "teams": [
+            "LOUD",
+            "NRG",
+            "ONSIDE GAMING",
+            "T1"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Neon",
+            "Omen",
+            "Sova",
+            "Yoru"
+          ],
+          "games": 10,
+          "wins": 6,
+          "teams": [
+            "KIWOOM DRX",
+            "Rex Regum Qeon",
+            "T1",
+            "ZETA DIVISION"
+          ]
+        },
+        {
+          "agents": [
+            "Killjoy",
+            "Neon",
+            "Omen",
+            "Sova",
+            "Yoru"
+          ],
+          "games": 8,
+          "wins": 5,
+          "teams": [
+            "Nongshim RedForce",
+            "Sharper Esports"
+          ]
+        }
+      ]
+    },
+    "Sunset": {
+      "played": 154,
+      "agents": [
+        {
+          "agent": "Omen",
+          "picks": 152
+        },
+        {
+          "agent": "Neon",
+          "picks": 121
+        },
+        {
+          "agent": "Sova",
+          "picks": 88
+        },
+        {
+          "agent": "Cypher",
+          "picks": 87
+        },
+        {
+          "agent": "Fade",
+          "picks": 59
+        },
+        {
+          "agent": "Chamber",
+          "picks": 56
+        },
+        {
+          "agent": "Sage",
+          "picks": 50
+        },
+        {
+          "agent": "Phoenix",
+          "picks": 39
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Cypher",
+            "Neon",
+            "Omen",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 21,
+          "wins": 7,
+          "teams": [
+            "100 Thieves",
+            "2Game Esports",
+            "GIANTX",
+            "Gentle Mates",
+            "Global Esports",
+            "MIBR",
+            "NRG",
+            "Natus Vincere",
+            "Sharper Esports",
+            "Team Secret",
+            "Team Vitality"
+          ]
+        },
+        {
+          "agents": [
+            "Chamber",
+            "Fade",
+            "Neon",
+            "Omen",
+            "Sage"
+          ],
+          "games": 14,
+          "wins": 7,
+          "teams": [
+            "Cloud9",
+            "ENVY",
+            "FNATIC",
+            "Gen.G",
+            "Rex Regum Qeon",
+            "TYLOO",
+            "Team Heretics",
+            "VARREL"
+          ]
+        },
+        {
+          "agents": [
+            "Chamber",
+            "Neon",
+            "Omen",
+            "Sage",
+            "Sova"
+          ],
+          "games": 11,
+          "wins": 8,
+          "teams": [
+            "LOUD",
+            "Rex Regum Qeon",
+            "Team Heretics"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Fade",
+            "Omen",
+            "Waylay",
+            "Yoru"
+          ],
+          "games": 8,
+          "wins": 4,
+          "teams": [
+            "DetonatioN FocusMe",
+            "Nongshim RedForce",
+            "Xi Lai Gaming"
+          ]
+        }
+      ]
+    },
+    "Breeze": {
+      "played": 94,
+      "agents": [
+        {
+          "agent": "Sova",
+          "picks": 94
+        },
+        {
+          "agent": "Neon",
+          "picks": 71
+        },
+        {
+          "agent": "Harbor",
+          "picks": 70
+        },
+        {
+          "agent": "Viper",
+          "picks": 63
+        },
+        {
+          "agent": "Phoenix",
+          "picks": 42
+        },
+        {
+          "agent": "Cypher",
+          "picks": 36
+        },
+        {
+          "agent": "Jett",
+          "picks": 27
+        },
+        {
+          "agent": "Kayo",
+          "picks": 20
+        }
+      ],
+      "comps": [
+        {
+          "agents": [
+            "Cypher",
+            "Harbor",
+            "Neon",
+            "Phoenix",
+            "Sova"
+          ],
+          "games": 18,
+          "wins": 9,
+          "teams": [
+            "100 Thieves",
+            "DetonatioN FocusMe",
+            "FNATIC",
+            "FURIA",
+            "Gen.G",
+            "KRÜ Esports",
+            "M80",
+            "MIBR",
+            "Natus Vincere",
+            "QT DIG∞",
+            "Team Liquid"
+          ]
+        },
+        {
+          "agents": [
+            "Harbor",
+            "Neon",
+            "Phoenix",
+            "Sova",
+            "Viper"
+          ],
+          "games": 13,
+          "wins": 7,
+          "teams": [
+            "DetonatioN FocusMe",
+            "GIANTX",
+            "KIWOOM DRX",
+            "Nongshim RedForce",
+            "Paper Rex",
+            "Sentinels",
+            "Sharper Esports"
+          ]
+        },
+        {
+          "agents": [
+            "Harbor",
+            "Jett",
+            "Kayo",
+            "Sova",
+            "Viper"
+          ],
+          "games": 12,
+          "wins": 6,
+          "teams": [
+            "Cloud9",
+            "FURIA",
+            "NRG",
+            "Natus Vincere",
+            "T1",
+            "Team Secret",
+            "Team Vitality"
+          ]
+        },
+        {
+          "agents": [
+            "Cypher",
+            "Harbor",
+            "Neon",
+            "Sova",
+            "Viper"
+          ],
+          "games": 5,
+          "wins": 4,
+          "teams": [
+            "Cloud9"
+          ]
+        }
+      ]
+    }
+  }
+}

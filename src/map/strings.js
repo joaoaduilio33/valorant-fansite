@@ -1,0 +1,33 @@
+// UI copy for the map pages, in Portuguese and English.
+export const mapStrings = {
+  pt: {
+    api: 'pt-BR', skip: 'Pular para o conteúdo', home: 'Início', locale: 'pt-BR',
+    tabs: { label: 'Seções do mapa', visao: 'Visão geral', minimapa: 'Minimapa', comps: 'Composições' },
+    prev: 'Mapa anterior', next: 'Próximo mapa', keys: '← → trocam de mapa',
+    loading: 'Carregando mapa…', error: 'Não foi possível carregar os dados do mapa.', retry: 'Tentar novamente',
+    footer: ['Projeto de fã não oficial.', 'VALORANT e Riot Games são marcas de seus respectivos proprietários.'],
+    location: 'Localização', coordinates: 'Coordenadas', sites: 'Pontos', pool: 'No rodízio competitivo', outPool: 'Fora do rodízio competitivo',
+    minimapTitle: 'Minimapa', minimapIntro: 'Os nomes que os jogadores usam para cada canto do mapa. Filtre por região ou passe o mouse na lista.',
+    regions: { All: 'Todos', A: 'A', B: 'B', C: 'C', Mid: 'Meio', AttackerSide: 'Lado atacante', DefenderSide: 'Lado defensor' },
+    compsTitle: 'Composições mais usadas', topAgents: 'Agentes mais escolhidos',
+    compsIntro: (events, date) => `Cada time em cada partida de ${events}, segundo o vlr.gg. Atualizado em ${date}.`,
+    picked: (count) => `${count} ${count === 1 ? 'vez' : 'vezes'}`, wins: 'vitórias', teams: 'Times',
+    noComps: 'Este mapa não está no rodízio competitivo atual, então não há dados de campeonato recentes.',
+    source: 'Fonte: vlr.gg',
+  },
+  en: {
+    api: 'en-US', skip: 'Skip to content', home: 'Home', locale: 'en-US',
+    tabs: { label: 'Map sections', visao: 'Overview', minimapa: 'Minimap', comps: 'Team comps' },
+    prev: 'Previous map', next: 'Next map', keys: '← → switch maps',
+    loading: 'Loading map…', error: 'Could not load the map data.', retry: 'Try again',
+    footer: ['Unofficial fan project.', 'VALORANT and Riot Games are trademarks of their respective owners.'],
+    location: 'Location', coordinates: 'Coordinates', sites: 'Sites', pool: 'In the competitive pool', outPool: 'Out of the competitive pool',
+    minimapTitle: 'Minimap', minimapIntro: 'The names players use for every corner of the map. Filter by region or hover the list.',
+    regions: { All: 'All', A: 'A', B: 'B', C: 'C', Mid: 'Mid', AttackerSide: 'Attacker side', DefenderSide: 'Defender side' },
+    compsTitle: 'Most played comps', topAgents: 'Most picked agents',
+    compsIntro: (events, date) => `Every team in every game of ${events}, according to vlr.gg. Updated on ${date}.`,
+    picked: (count) => `${count} ${count === 1 ? 'time' : 'times'}`, wins: 'win rate', teams: 'Teams',
+    noComps: 'This map is not in the current competitive pool, so there is no recent tournament data.',
+    source: 'Source: vlr.gg',
+  },
+};

@@ -1,0 +1,42 @@
+/* Left menu, like a game's pause screen: identity on top, numbered sections, agent switch at the bottom. */
+.game-menu{position:relative;z-index:10;display:flex;flex-direction:column;gap:2.2rem;padding:2rem clamp(1.25rem,2vw,2.2rem);border-right:1px solid var(--line);background:var(--paper);overflow-x:hidden;overflow-y:auto}
+.game-menu .brand{color:var(--ink)}
+.game-id{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:.4rem .7rem;animation:fade-in .6s .1s both}
+.game-id .flag-badge{grid-row:span 2}
+.game-id-name{margin:0;font-family:var(--display);font-weight:900;font-stretch:125%;font-size:1.25rem;line-height:1;text-transform:uppercase}
+.game-id-role{display:flex;align-items:center;gap:.4rem;margin:0;color:var(--muted);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase}
+.game-id-role img{width:14px;height:14px;filter:invert(1) brightness(.35)}
+
+.game-nav{display:flex;flex-direction:column}
+.game-nav a{position:relative;display:grid;grid-template-columns:2.6rem 1fr;align-items:baseline;padding:1rem 0;color:var(--muted);text-decoration:none;transition:color .2s,padding .3s cubic-bezier(.2,.8,.2,1);animation:fade-up .5s calc(.15s + var(--n,0) * 60ms) both}
+.game-nav a:nth-child(2){--n:1}.game-nav a:nth-child(3){--n:2}.game-nav a:nth-child(4){--n:3}.game-nav a:nth-child(5){--n:4}
+.game-nav a b{font-family:var(--display);font-weight:900;font-stretch:125%;font-size:1.05rem;transition:color .2s}
+.game-nav a span{font-size:.85rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase}
+.game-nav a::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--line)}
+.game-nav a::before{content:'';position:absolute;z-index:1;left:0;bottom:0;width:0;height:2px;background:var(--ink);transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.game-nav a:hover{color:var(--ink);padding-left:.35rem}
+.game-nav a[aria-selected="true"]{color:var(--ink);padding-left:.35rem}
+.game-nav a[aria-selected="true"] b{color:var(--red)}
+.game-nav a[aria-selected="true"]::before{width:100%}
+.game-nav a:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+.game-foot{display:grid;gap:1rem;margin-top:auto}
+.game-switch{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.game-switch a{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:40px;text-align:center;padding:0 .4rem;border:1px solid var(--line);color:var(--ink-2);font-size:.72rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:border-color .2s,background .2s,color .2s}
+.game-switch a:hover,.game-switch a:focus-visible{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.game-hint,.game-legal{margin:0;color:var(--muted);font-size:.7rem;line-height:1.5;letter-spacing:.06em}
+
+@media(max-width:900px){
+  .game-menu{position:sticky;top:0;flex-direction:row;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;padding:.8rem 1rem;border-right:0;border-bottom:1px solid var(--line);overflow:visible}
+  .game-menu .brand-name,.game-id-role,.game-hint,.game-legal{display:none}
+  .game-id{grid-template-columns:auto auto}
+  .game-id .flag-badge{grid-row:auto}
+  .game-nav{order:5;flex-direction:row;width:100%;overflow-x:auto;scrollbar-width:none}
+  .game-nav a{flex:none;grid-template-columns:auto auto;gap:.4rem;padding:.6rem .9rem .7rem 0}
+  .game-nav a span{font-size:.72rem;letter-spacing:.14em}
+  .game-nav a:hover,.game-nav a[aria-selected="true"]{padding-left:0}
+  .game-foot{display:flex;align-items:center;gap:.5rem;margin:0 0 0 auto}
+  .game-switch{display:flex}
+  .game-switch a{line-height:34px;padding:0 .7rem;font-size:0}
+  .game-switch a span{font-size:.9rem}
+}

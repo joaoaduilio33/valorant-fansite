@@ -1,0 +1,36 @@
+@import url('./agent/poster.css');
+@import url('./agent/flag.css');
+@import url('./agent/tabs.css');
+@import url('./agent/profile.css');
+@import url('./agent/abilities.css');
+@import url('./agent/mastery.css');
+
+/* Agent pages share the home's light palette and fonts (src/home.css). --agent is the API colour,
+   set on <body> by the generated page; --agent-v is its bright version (set by agent-page.js). */
+.agent-page{--bg:var(--paper);--rule:var(--line);background:var(--paper);color:var(--ink);font-family:var(--text);transition:opacity .26s}
+.agent-page.is-leaving{opacity:0}
+
+/* Game layout: menu column + one screen at a time. */
+.game{display:grid;grid-template-columns:clamp(230px,19vw,300px) minmax(0,1fr);height:100vh;height:100dvh}
+.game-screen{position:relative;height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.tab-panel{min-height:100%;animation:panel-in .55s cubic-bezier(.2,.8,.2,1)}
+.tab-panel[data-tab="perfil"]{height:100%}
+.tab-panel:focus-visible{outline:none}
+@keyframes panel-in{from{opacity:0;transform:translateX(24px)}}
+
+.lang-switch{display:inline-flex;width:max-content;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang-switch button{min-width:44px;min-height:34px;border:0;background:none;color:var(--muted);font-size:.72rem;letter-spacing:.12em;cursor:pointer}
+.lang-switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 90ms)}
+.reveal.is-visible{opacity:1;transform:none}
+
+.agent-status{display:grid;place-items:center;gap:.75rem;min-height:100vh;padding:2rem;text-align:center;color:var(--muted)}
+.agent-status button{min-height:44px;padding:0 1.2rem;border:1px solid var(--red);background:var(--red);color:#fff;cursor:pointer}
+
+@media(max-width:900px){
+  .game{display:block;height:auto}
+  .game-screen{height:auto;overflow:visible}
+  .tab-panel[data-tab="perfil"]{height:auto}
+}
+@media(prefers-reduced-motion:reduce){.agent-page *{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
